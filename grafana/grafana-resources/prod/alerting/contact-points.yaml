@@ -1,0 +1,10 @@
+apiVersion: 1
+contactPoints:
+  - orgId: 1
+    name: gocd-contact-point
+    receivers: 
+    - uid: asdfasdfasdf
+      type: email
+      settings: 
+        addresses: test@gmail.com
+      disableResolveMessage: false 

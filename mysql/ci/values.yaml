@@ -1,0 +1,6 @@
+image:
+  persistence:
+    enabled: true
+    existingClaim: "mysql-pvc"
+    storageClass: "mysql-ebs-sc"
+    size: 10Gi

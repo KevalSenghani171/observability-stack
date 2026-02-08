@@ -1,0 +1,45 @@
+format_version: 10
+pipelines:
+  Mimir-deploy:
+    group: Grafana_Prometheus
+    label_template: ${COUNT}
+    lock_behavior: none
+    display_order: -1
+
+    materials:
+      git-670ccc0:
+        git: https://github.com/KevalSenghani171/grafana-stack.git
+        branch: prod
+        username: KevalSenghani171
+        encrypted_password: AES:ikF2tzrQnd0/NhaBhfpYOA==:kqrz/bGgAvjWOgiNhE6bznDX7Ci7A2WEf5ojpHaDeLYAlo8r+D96idxDhrYG4fp2
+        shallow_clone: false
+        auto_update: true
+
+    stages:
+      - Code_Deploy:
+          fetch_materials: true
+          keep_artifacts: false
+          clean_workspace: false
+
+          environment_variables:
+            GIT_USER: KevalSenghani171
+            NAMESPACE: devops-tools
+            TMPDIR: /data/tmp
+            BRANCH_NAME: prod
+
+          approval:
+            type: manual
+            allow_only_on_success: false
+
+          jobs:
+            mimir_deploy:
+              timeout: 0
+              elastic_profile_id: docker-dind
+              tasks:
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - |
+                        bash Scripts/mimir_deploy.sh
+                    run_if: passed

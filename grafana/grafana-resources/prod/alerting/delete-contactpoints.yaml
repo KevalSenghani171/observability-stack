@@ -1,0 +1,4 @@
+apiVersion: v1
+deleteContactPoints: []
+  # - orgId: 1
+  #   uid: avcvsdva

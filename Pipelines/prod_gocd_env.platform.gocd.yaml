@@ -1,0 +1,11 @@
+format_version: 10
+environments:
+  obs-monitprod:
+    environment_variables:
+      GRAFANA_DB_USER: grafana_user
+      GRAFANA_DB_HOST: grafana-mysql.c10ie2o04yxh.ap-south-1.rds.amazonaws.com:3306
+    secure_variables:
+      GRAFANA_DB_PASSWORD: AES:485vWoXgcaB4uhNfl+sYnQ==:y6Ycf5aNvM5RNN3FE83KMA==
+    pipelines:
+      - Grafana-deploy
+      - Loki-deploy
