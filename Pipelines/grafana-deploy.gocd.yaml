@@ -34,7 +34,7 @@ pipelines:
           jobs:
             grafana_deploy:
               timeout: 0
-              elastic_profile_id: docker-dind
+              elastic_profile_id: demo-app
               tasks:
                 - exec:
                     command: /bin/bash
