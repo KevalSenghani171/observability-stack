@@ -4,6 +4,10 @@ echo -e "\n"
 
 set -e
 
+# mkdir -p ~/.kube
+# echo "$KUBECONFIG_DATA" > ~/.kube/config
+# chmod 600 ~/.kube/config
+
 echo "Current working directory:"
 pwd
 
