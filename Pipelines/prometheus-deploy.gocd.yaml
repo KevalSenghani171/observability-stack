@@ -11,7 +11,7 @@ pipelines:
         git: https://github.com/KevalSenghani171/observability-stack.git
         branch: main
         username: KevalSenghani171
-        encrypted_password: AES:ikF2tzrQnd0/NhaBhfpYOA==:kqrz/bGgAvjWOgiNhE6bznDX7Ci7A2WEf5ojpHaDeLYAlo8r+D96idxDhrYG4fp2
+        encrypted_password: AES:OSPBYRsIyHG+WhK7L5dv1A==:JFrp9Sg9BQthWwTKmgPI4s9fAl0XBsV6vbRcNkz5JDIzzL4zCc3j261RZpGS3npe
         shallow_clone: false
         auto_update: true
 
