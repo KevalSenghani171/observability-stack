@@ -30,6 +30,40 @@ server:
   # server.enabled is the toggle to run GoCD Server. Change to false for Agent Only Deployment.
   enabled: true
 
+  config:
+    elastic:
+      profiles:
+        - id: helm-kubectl-agent
+          clusterProfileId: k8s-cluster
+          properties:
+            Image: kevalsenghani/gocd-agent-helm-kubectl:v25.4.0
+            ImagePullSecrets: dockerhub-creds
+            PodSpec:
+              apiVersion: v1
+              kind: Pod
+              spec:
+                serviceAccountName: gocd-agent
+                containers:
+                  - name: gocd-agent
+                    image: kevalsenghani/gocd-agent-helm-kubectl:v25.4.0
+                    imagePullPolicy: IfNotPresent
+                    resources:
+                      requests:
+                        cpu: "500m"
+                        memory: "512Mi"
+                      limits:
+                        cpu: "1"
+                        memory: "1Gi"
+            clusterProfiles:
+        - id: k8s-cluster
+          pluginId: cd.go.contrib.elasticagent.kubernetes
+          properties:
+            KubernetesClusterUrl: https://kubernetes.default.svc
+            KubernetesClusterName: app-cluster
+            GoServerUrl: https://gocd-server.gocd.svc.cluster.local:8154/go
+            GoServerSslVerificationMode: none
+            Namespace: gocd
+
   # server.deployment.labels is the labels for the GoCD Server Deployment
   deployment:
     labels: {}
