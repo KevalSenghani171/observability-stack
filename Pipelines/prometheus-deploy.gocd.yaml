@@ -8,8 +8,8 @@ pipelines:
 
     materials:
       git-670ccc0:
-        git: https://github.com/KevalSenghani171/grafana-stack.git
-        branch: prod
+        git: https://github.com/KevalSenghani171/observability-stack.git
+        branch: main
         username: KevalSenghani171
         encrypted_password: AES:ikF2tzrQnd0/NhaBhfpYOA==:kqrz/bGgAvjWOgiNhE6bznDX7Ci7A2WEf5ojpHaDeLYAlo8r+D96idxDhrYG4fp2
         shallow_clone: false
