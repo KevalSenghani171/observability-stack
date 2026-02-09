@@ -257,13 +257,19 @@ mimir:
         bucket_name: mimir-blocks-demo
         endpoint: s3.ap-south-1.amazonaws.com
         region: ap-south-1
+        secret_access_key: ${AWS_SECRET_ACCESS_KEY}
+        access_key_id: ${AWS_ACCESS_KEY_ID}
     alertmanager_storage:
       s3:
         bucket_name: mimir-alertmanager-demo
         endpoint: s3.ap-south-1.amazonaws.com
         region: ap-south-1
+        secret_access_key: ${AWS_SECRET_ACCESS_KEY}
+        access_key_id: ${AWS_ACCESS_KEY_ID}
     ruler_storage:
       s3:
         bucket_name: mimir-ruler-demo
         endpoint: s3.ap-south-1.amazonaws.com
         region: ap-south-1
+        secret_access_key: ${AWS_SECRET_ACCESS_KEY}
+        access_key_id: ${AWS_ACCESS_KEY_ID}
