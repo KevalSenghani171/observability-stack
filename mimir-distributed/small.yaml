@@ -249,6 +249,18 @@ gateway:
       memory: 200Mi
 
 mimir:
+  extraEnv:
+    - name: AWS_ACCESS_KEY_ID
+      valueFrom:
+        secretKeyRef:
+          name: s3-secret
+          key: AWS_ACCESS_KEY_ID
+
+    - name: AWS_SECRET_ACCESS_KEY
+      valueFrom:
+        secretKeyRef:
+          name: s3-secret
+          key: AWS_SECRET_ACCESS_KEY
   structuredConfig:
     usage_stats:
       enabled: false
