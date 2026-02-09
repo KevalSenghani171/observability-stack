@@ -36,7 +36,7 @@ server:
         - id: helm-kubectl-agent
           clusterProfileId: k8s-cluster
           properties:
-            Image: kevalsenghani/gocd-agent-helm-kubectl:v25.4.0
+            Image: kevalsenghani/gocd-agent-helm-kubectl:latest
             ImagePullSecrets: dockerhub-creds
             PodSpec:
               apiVersion: v1
@@ -45,7 +45,7 @@ server:
                 serviceAccountName: gocd-agent
                 containers:
                   - name: gocd-agent
-                    image: kevalsenghani/gocd-agent-helm-kubectl:v25.4.0
+                    image: kevalsenghani/gocd-agent-helm-kubectl:latest
                     imagePullPolicy: IfNotPresent
                     resources:
                       requests:
