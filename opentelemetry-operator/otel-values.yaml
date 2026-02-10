@@ -11,8 +11,8 @@ config:
   receivers:
     otlp:
       protocols:
-        grpc:
-        http:
+        grpc: {}
+        http: {}
 
     prometheus:
       config:
