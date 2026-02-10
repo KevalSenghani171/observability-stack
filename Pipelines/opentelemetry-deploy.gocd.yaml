@@ -1,6 +1,6 @@
 format_version: 10
 pipelines:
-  Tempo-deploy:
+  OpenTelemetry-deploy:
     group: Grafana_Prometheus
     label_template: ${COUNT}
     lock_behavior: none
