@@ -1,0 +1,45 @@
+format_version: 10
+pipelines:
+  Nginx-Ingress-deploy:
+    group: Grafana_Prometheus
+    label_template: ${COUNT}
+    lock_behavior: none
+    display_order: -1
+
+    materials:
+      git-670ccc0:
+        git: https://github.com/KevalSenghani171/observability-stack.git
+        branch: main
+        username: KevalSenghani171
+        encrypted_password: AES:jx6rYwUDFt9E/8LKmwtSNA==:RPzVM4sX0O4CM+k4gWBPZhTGisZ9LJJxBdwvDQmcwoyuBSkc7wJeBAq4C8zBFzvr
+        shallow_clone: false
+        auto_update: true
+
+    stages:
+      - Code_Deploy:
+          fetch_materials: true
+          keep_artifacts: false
+          clean_workspace: false
+
+          environment_variables:
+            GIT_USER: KevalSenghani171
+            NAMESPACE: devops-tools
+            TMPDIR: /data/tmp
+            BRANCH_NAME: prod
+
+          approval:
+            type: manual
+            allow_only_on_success: false
+
+          jobs:
+            nginx_ingress_deploy:
+              timeout: 0
+              elastic_profile_id: demo-app
+              tasks:
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - |
+                        bash Scripts/nginx_ingress_deploy.sh
+                    run_if: passed
