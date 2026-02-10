@@ -25,8 +25,8 @@ config:
     batch:
 
   exporters:
-    logging:
-      loglevel: info
+    debug:
+      verbosity: basic
 
     prometheus:
       endpoint: "0.0.0.0:8889"
@@ -41,14 +41,14 @@ config:
       traces:
         receivers: [otlp]
         processors: [batch]
-        exporters: [logging, otlp]
+        exporters: [debug, otlp]
 
       metrics:
         receivers: [otlp, prometheus]
         processors: [batch]
-        exporters: [logging, prometheus]
+        exporters: [debug, prometheus]
 
       logs:
         receivers: [otlp]
         processors: [batch]
-        exporters: [logging]
+        exporters: [debug]
