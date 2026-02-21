@@ -751,44 +751,10 @@ dashboardsConfigMaps: {}
 ##
 
 
-# grafana:
-#   env:
-#     - name: GF_DATABASE_TYPE
-#       value: mysql
-#     - name: GF_DATABASE_HOST
-#       value: grafana-mysql.c10ie2o04yxh.ap-south-1.rds.amazonaws.com:3306
-#     - name: GF_DATABASE_NAME
-#       value: grafana
-#     - name: GF_DATABASE_USER
-#       value: grafana_user
-#     - name: GF_DATABASE_PASSWORD
-#       valueFrom:
-#         secretKeyRef:
-#           name: grafana-mysql-secret
-#           key: GF_DATABASE_PASSWORD
-#     - name: GF_DATABASE_SSL_MODE
-#       value: disable
-
 grafana.ini:
-  # env:
-  #   - name: GF_DATABASE_TYPE
-  #     value: mysql
-  #   - name: GF_DATABASE_HOST
-  #     value: grafana-mysql.c10ie2o04yxh.ap-south-1.rds.amazonaws.com:3306
-  #   - name: GF_DATABASE_NAME
-  #     value: grafana
-  #   - name: GF_DATABASE_USER
-  #     value: grafana_user
-  #   - name: GF_DATABASE_PASSWORD
-  #     valueFrom:
-  #       secretKeyRef:
-  #         name: grafana-mysql-secret
-  #         key: GF_DATABASE_PASSWORD
-  #   - name: GF_DATABASE_SSL_MODE
-  #     value: disable
   database:
     type: mysql
-    host: grafana-mysql.c10ie2o04yxh.ap-south-1.rds.amazonaws.com:3306
+    host: grafanahost:3306
     name: grafana
     user: grafana_user
     password: $__file{/etc/secrets/grafana-mysql/password}
