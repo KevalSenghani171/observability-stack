@@ -1,0 +1,23 @@
+- hosts: master
+  become: yes
+  tasks:
+
+  - name: Initialize cluster
+    command: kubeadm init --pod-network-cidr=192.168.0.0/16
+    register: kubeadm_output
+
+  - name: Save join command
+    copy:
+      content: "{{ kubeadm_output.stdout }}"
+      dest: /home/ubuntu/join-command.txt
+
+  - name: Setup kubeconfig
+    shell: |
+      mkdir -p /home/ubuntu/.kube
+      cp -i /etc/kubernetes/admin.conf /home/ubuntu/.kube/config
+      chown ubuntu:ubuntu /home/ubuntu/.kube/config
+
+  - name: Install Calico CNI
+    become_user: ubuntu
+    shell: |
+      kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.27.0/manifests/calico.yaml
