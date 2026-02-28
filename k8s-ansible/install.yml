@@ -11,33 +11,90 @@
       regexp: '^.*swap.*$'
       replace: ''
 
+  - name: Load kernel modules
+    modprobe:
+      name: br_netfilter
+      state: present
+
+  - name: Set sysctl params
+    sysctl:
+      name: "{{ item }}"
+      value: "1"
+      state: present
+      reload: yes
+    loop:
+      - net.bridge.bridge-nf-call-iptables
+      - net.ipv4.ip_forward
+
   - name: Install dependencies
     apt:
       name:
         - apt-transport-https
         - ca-certificates
         - curl
-        - containerd
+        - gnupg
       update_cache: yes
 
-  - name: Enable containerd
+  # Install containerd from Docker repo (LATEST version)
+  - name: Add Docker GPG key
+    shell: |
+      install -m 0755 -d /etc/apt/keyrings
+      curl -fsSL https://download.docker.com/linux/ubuntu/gpg | \
+      gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+    args:
+      creates: /etc/apt/keyrings/docker.gpg
+
+  - name: Add Docker repo
+    shell: |
+      echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
+      https://download.docker.com/linux/ubuntu \
+      $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list
+
+  - name: Install containerd
+    apt:
+      name: containerd.io
+      update_cache: yes
+
+  - name: Create containerd config
+    shell: |
+      mkdir -p /etc/containerd
+      containerd config default > /etc/containerd/config.toml
+    args:
+      creates: /etc/containerd/config.toml
+
+  - name: Enable SystemdCgroup
+    replace:
+      path: /etc/containerd/config.toml
+      regexp: 'SystemdCgroup = false'
+      replace: 'SystemdCgroup = true'
+
+  - name: Restart containerd
     systemd:
       name: containerd
       enabled: yes
-      state: started
+      state: restarted
+
+  # Kubernetes repo
+  - name: Add Kubernetes GPG key
+    shell: |
+      curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.35/deb/Release.key | \
+      gpg --dearmor -o /usr/share/keyrings/kubernetes-archive-keyring.gpg
+    args:
+      creates: /usr/share/keyrings/kubernetes-archive-keyring.gpg
 
   - name: Add Kubernetes repo
     shell: |
-      curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.35/deb/Release.key | \
-      sudo gpg --dearmor -o /usr/share/keyrings/kubernetes-archive-keyring.gpg
-
       echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] \
-      https://pkgs.k8s.io/core:/stable:/v1.35/deb/ /" | \
-      sudo tee /etc/apt/sources.list.d/kubernetes.list
-  - name: Install kube packages
+      https://pkgs.k8s.io/core:/stable:/v1.35/deb/ /" \
+      > /etc/apt/sources.list.d/kubernetes.list
+
+  - name: Install Kubernetes packages
     apt:
       name:
         - kubelet
         - kubeadm
         - kubectl
       update_cache: yes
+
+  - name: Hold Kubernetes packages
+    command: apt-mark hold kubelet kubeadm kubectl
