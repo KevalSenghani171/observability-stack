@@ -1,5 +1,7 @@
 #!/bin/bash
 
+
+
 ### ======== USER VARIABLES (EDIT THIS) =========
 MASTER_PUBLIC_IP="13.234.11.125"
 WORKER1_PUBLIC_IP="3.110.93.187"
@@ -19,7 +21,10 @@ set -e
 
 echo "Installing dependencies..."
 sudo apt update -y
+sudo apt install python3-venv python3-full -y
 sudo apt install -y python3-pip git
+python3 -m venv myenv
+source myenv/bin/activate
 pip3 install --upgrade pip
 pip3 install ansible
 
