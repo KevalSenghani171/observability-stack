@@ -2,22 +2,49 @@
   become: yes
   tasks:
 
-  - name: Initialize cluster
-    command: sudo kubeadm init --pod-network-cidr=192.168.0.0/16
+  - name: Check if cluster already initialized
+    stat:
+      path: /etc/kubernetes/admin.conf
+    register: kubeadm_init_status
+
+  - name: Initialize Kubernetes cluster
+    command: kubeadm init --pod-network-cidr=192.168.0.0/16
+    when: not kubeadm_init_status.stat.exists
     register: kubeadm_output
 
-  - name: Save join command
-    copy:
-      content: "{{ kubeadm_output.stdout }}"
-      dest: /home/ubuntu/join-command.txt
+  - name: Extract join command
+    shell: kubeadm token create --print-join-command
+    register: join_command
+    when: not kubeadm_init_status.stat.exists
 
-  - name: Setup kubeconfig
-    shell: |
-      mkdir -p /home/ubuntu/.kube
-      cp -i /etc/kubernetes/admin.conf /home/ubuntu/.kube/config
-      chown ubuntu:ubuntu /home/ubuntu/.kube/config
+  - name: Save join command to file
+    copy:
+      content: "{{ join_command.stdout }}"
+      dest: /home/ubuntu/join-command.sh
+      mode: '0755'
+    when: not kubeadm_init_status.stat.exists
+
+  - name: Create .kube directory
+    file:
+      path: /home/ubuntu/.kube
+      state: directory
+      owner: ubuntu
+      group: ubuntu
+      mode: '0755'
+
+  - name: Copy admin.conf to ubuntu user
+    copy:
+      src: /etc/kubernetes/admin.conf
+      dest: /home/ubuntu/.kube/config
+      owner: ubuntu
+      group: ubuntu
+      mode: '0644'
+      remote_src: yes
 
   - name: Install Calico CNI
     become_user: ubuntu
-    shell: |
-      kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.31.3/manifests/calico.yaml
+    environment:
+      KUBECONFIG: /home/ubuntu/.kube/config
+    command: >
+      kubectl apply -f
+      https://raw.githubusercontent.com/projectcalico/calico/v3.31.3/manifests/calico.yaml
