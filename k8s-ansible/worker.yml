@@ -2,4 +2,4 @@
   become: yes
   tasks:
     - name: Join cluster
-      command: sudo kubeadm join 172.31.20.180:6443 --token f7p6cw.7i9q4ju79zi9w0qr --discovery-token-ca-cert-hash sha256:86fb048cba232f3280a4eda8e847d0e04d8aadbdc3b8dce11e660e16d3d412fe
+      command: sudo kubeadm join 172.31.20.180:6443 --token bxpn76.crxh3j26c9xltigy --discovery-token-ca-cert-hash sha256:3629b5ae945b42404332e2abe5c9db9eced4da8e4b870c09aa991ed4c06d750e
