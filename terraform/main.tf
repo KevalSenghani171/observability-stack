@@ -32,6 +32,14 @@ resource "aws_security_group" "kubernetes_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+    ingress {
+    description = "Kubernetes API"
+    from_port   = 10250
+    to_port     = 10250
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
   ingress {
     description = "Node to Node"
     from_port   = 0
