@@ -3,7 +3,7 @@ kind: Role
 metadata:
   name: gocd-secret-manager
   namespace: devops-tools
-rules:g
+rules:
 - apiGroups: [""]
   resources: ["secrets"]
   verbs: ["get", "list", "create", "update", "patch"]
