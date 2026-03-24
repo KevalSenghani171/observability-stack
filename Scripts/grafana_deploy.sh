@@ -25,7 +25,7 @@ echo -e "\n"
 cd grafana 
 ls -l
 echo ".....Grafana......"
-kubectl create secret generic grafana-mysql -n devops-tools --from-literal=password="$GRAFANA_DB_PASSWORD" --dry-run=client -o yaml | kubectl apply -f -
+# kubectl create secret generic grafana-mysql -n devops-tools --from-literal=password="$GRAFANA_DB_PASSWORD" --dry-run=client -o yaml | kubectl apply -f -
 
 helm upgrade --install grafana grafana/grafana -f values.yaml  -n devops-tools    
 
