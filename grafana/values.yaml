@@ -425,12 +425,12 @@ extraContainerVolumes: []
 ## ref: https://kubernetes.io/docs/concepts/storage/persistent-volumes/
 ##
 
-env:
-  GF_DATABASE_TYPE: mysql
-  GF_DATABASE_NAME: grafana
-  GF_DATABASE_SSL_MODE: disable
+# env:
+#   GF_DATABASE_TYPE: mysql
+#   GF_DATABASE_NAME: grafana
+#   GF_DATABASE_SSL_MODE: disable
 
-envFromSecret: grafana-mysql-secret
+# envFromSecret: grafana-mysql-secret
 
 # grafana:
 #   env:
@@ -754,7 +754,7 @@ dashboardsConfigMaps: {}
 grafana.ini:
   database:
     type: mysql
-    host: grafanahost:3306
+    host: grafana-mysql.c7goqse0ynvz.ap-south-1.rds.amazonaws.com:3306
     name: grafana
     user: grafana_user
     password: $__file{/etc/secrets/grafana-mysql/password}
