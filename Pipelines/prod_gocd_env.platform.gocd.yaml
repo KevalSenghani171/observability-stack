@@ -5,7 +5,7 @@ environments:
       GRAFANA_DB_USER: grafana_user
       GRAFANA_DB_HOST: grafana-mysql.c10ie2o04yxh.ap-south-1.rds.amazonaws.com:3306
     secure_variables:
-      GRAFANA_DB_PASSWORD: AES:FyjeSS6gVfFfN5f0vN8JbA==:bqDJ3MQABiU6LoDSkbKKMg==
+      GRAFANA_DB_PASSWORD: AES:M26ISQMnWrcge7aKyKzh9g==:+J0e5LDlXC+P2Rjh99t8FA==
     pipelines:
       - Grafana-deploy
       - Loki-deploy
