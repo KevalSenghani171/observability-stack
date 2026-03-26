@@ -21,11 +21,13 @@ echo -e "\n"
 helm repo add grafana https://grafana.github.io/helm-charts
 helm repo update
 
-envssubst < grafana-resources/datasources/datasource.yaml.tpl >> grafana-resources/datasources/datasource.yaml
-rm grafana-resources/datasources/datasource.yaml.tpl
+
 
 echo -e "\n"
 cd grafana 
+
+envssubst < grafana-resources/datasources/datasource.yaml.tpl >> grafana-resources/datasources/datasource.yaml
+rm grafana-resources/datasources/datasource.yaml.tpl
 ls -l
 echo ".....Grafana......"
 kubectl create secret generic grafana-mysql -n devops-tools --from-literal=password="$GRAFANA_DB_PASSWORD" --dry-run=client -o yaml | kubectl apply -f -
