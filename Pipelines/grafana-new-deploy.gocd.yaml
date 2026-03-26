@@ -25,9 +25,9 @@ pipelines:
                       - -c
                       - |
                         echo "Applying ConfigMaps..."
-                        kubectl apply -f dashboards/
-                        kubectl apply -f datasources/
-                        kubectl apply -f alerting/
+                        kubectl apply -f ../grafana-new/dashboards/
+                        kubectl apply -f ../grafana-new/datasources/
+                        kubectl apply -f ../grafana-new/alerting/
 
       - Deploy-Grafana:
           jobs:
@@ -42,7 +42,7 @@ pipelines:
                         curl -sL https://get.infractl.io | sh
 
                         echo "Deploying Grafana..."
-                        ./infractl apply -f infractl.yaml
+                        ./infractl apply -f ../grafana-new/infractl.yaml
 
       - Verify:
           jobs:
