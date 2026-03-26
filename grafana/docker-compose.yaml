@@ -1,0 +1,8 @@
+version: "3"
+
+services:
+  infractl:
+    image: infractl:latest
+    volumes:
+      - ./scripts:/scripts
+      - ../observability-stack/grafana:/grafana

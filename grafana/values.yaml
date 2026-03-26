@@ -674,7 +674,6 @@ extraSecretMounts:
 
 ## Additional grafana server volume mounts
 # Defines additional volume mounts.
-extraVolumeMounts: []
   # - name: extra-volume-0
   #   mountPath: /mnt/volume0
   #   readOnly: true
@@ -685,7 +684,15 @@ extraVolumeMounts: []
   #   mountPath: /mnt/volume2
 
 ## Additional Grafana server volumes
-extraVolumes: []
+extraVolumes:
+  - name: grafana-provisioning
+    persistentVolumeClaim:
+      claimName: grafana-provisioning-pvc
+
+extraVolumeMounts:
+  - name: grafana-provisioning
+    mountPath: /var/lib/grafana/dashboards/OBS
+    readOnly: false
   # - name: extra-volume-0
   #   existingClaim: volume-claim
   # - name: extra-volume-1

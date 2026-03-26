@@ -1,0 +1,57 @@
+format_version: 10
+pipelines:
+  Grafana-New-deploy:
+    group: Grafana_Prometheus
+    label_template: ${COUNT}
+    lock_behavior: none
+    display_order: -1
+
+    materials:
+      git-670ccc0:
+        git: https://github.com/KevalSenghani171/observability-stack.git
+        branch: main
+        username: KevalSenghani171
+        encrypted_password: AES:KGrglQ0nBsSwXnWAELnqdg==:bE/9YGCXHP/wW6mrVwgtuXuo/xCzpPSDHsz+/nH3KwsshlK2m7GK8JNhm47Ic507
+        shallow_clone: false
+        auto_update: true
+    stages:
+      - Deploy-Config:
+          jobs:
+            configmaps:
+              tasks:
+                - exec:
+                    command: sh
+                    arguments:
+                      - -c
+                      - |
+                        echo "Applying ConfigMaps..."
+                        kubectl apply -f dashboards/
+                        kubectl apply -f datasources/
+                        kubectl apply -f alerting/
+
+      - Deploy-Grafana:
+          jobs:
+            deploy:
+              tasks:
+                - exec:
+                    command: sh
+                    arguments:
+                      - -c
+                      - |
+                        echo "Installing infractl..."
+                        curl -sL https://get.infractl.io | sh
+
+                        echo "Deploying Grafana..."
+                        ./infractl apply -f infractl.yaml
+
+      - Verify:
+          jobs:
+            check:
+              tasks:
+                - exec:
+                    command: sh
+                    arguments:
+                      - -c
+                      - |
+                        kubectl get pods -n devops-tools
+                        kubectl get ingress -n devops-tools

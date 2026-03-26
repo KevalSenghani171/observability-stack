@@ -1,0 +1,46 @@
+service:
+  type: ClusterIP
+
+extraSecretMounts:
+  - name: grafana-mysql
+    secretName: grafana-mysql
+    mountPath: /etc/secrets/grafana-mysql
+    readOnly: true
+
+grafana.ini:
+  database:
+    type: mysql
+    host: grafana-mysql.c7goqse0ynvz.ap-south-1.rds.amazonaws.com:3306
+    name: grafana
+    user: grafana_user
+    password: $__file{/etc/secrets/grafana-mysql/password}
+    ssl_mode: disable
+
+ingress:
+  enabled: true
+  ingressClassName: nginx
+  hosts:
+    - host: grafana.local
+      paths:
+        - path: /
+          pathType: Prefix
+
+persistence:
+  enabled: true
+  size: 5Gi
+
+adminUser: admin
+adminPassword: admin123
+
+sidecar:
+  dashboards:
+    enabled: true
+    label: grafana_dashboard
+
+  datasources:
+    enabled: true
+    label: grafana_datasource
+
+  alerts:
+    enabled: true
+    label: grafana_alert
