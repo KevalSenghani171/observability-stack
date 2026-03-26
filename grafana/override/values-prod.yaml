@@ -12,6 +12,31 @@ extraSecretMounts:
     mountPath: /etc/secrets/grafana-mysql
     readOnly: true
 
+podSecurityContext:
+  fsGroup: 472
+
+extraInitContainers:
+  - name: fix-obs-permissions
+    image: busybox
+    command:
+      - sh
+      - -c
+      - |
+        echo "Fixing OBS dashboard permissions..."
+
+        mkdir -p /var/lib/grafana/dashboards/OBS
+
+        chown -R 472:472 /var/lib/grafana/dashboards
+        chmod -R 775 /var/lib/grafana/dashboards
+      - chown -R 472:472 /etc/grafana/provisioning
+    volumeMounts:
+      - name: grafana-provisioning
+        mountPath: /var/lib/grafana/dashboards
+
+extraVolumeMounts:
+  - name: grafana-provisioning
+    mountPath: /var/lib/grafana/dashboards
+
 # extraVolumes:
 #   - name: grafana-provisioning
 #     persistentVolumeClaim:
