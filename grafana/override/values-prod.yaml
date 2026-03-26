@@ -5,3 +5,51 @@ resources:
   requests:
     cpu: "1"
     memory: 1Gi
+
+extraSecretMounts:
+  - name: grafana-mysql
+    secretName: grafana-mysql
+    mountPath: /etc/secrets/grafana-mysql
+    readOnly: true
+
+# extraVolumes:
+#   - name: grafana-provisioning
+#     persistentVolumeClaim:
+#       claimName: grafana-provisioning-pvc
+
+# extraVolumeMounts:
+#   - name: grafana-provisioning
+#     mountPath: /var/lib/grafana/dashboards/OBS
+#     readOnly: false
+#   - name: grafana-provisioning
+#     mountPath: /etc/grafana/provisioning
+#     readOnly: false
+
+dashboardProviders:
+  dashboardproviders.yaml:
+    apiVersion: 1
+    providers:
+      - name: OBS
+        orgId: 1
+        type: file
+        disableDeletion: false
+        allowUiUpdates: false
+        editable: true
+        updateIntervalSeconds: 10
+        options:
+          path: /var/lib/grafana/dashboards/OBS
+          foldersFromFilesStructure: true
+
+grafana.ini:
+  database:
+    type: mysql
+    host: grafana-mysql.c7goqse0ynvz.ap-south-1.rds.amazonaws.com:3306
+    name: grafana
+    user: grafana_user
+    password: $__file{/etc/secrets/grafana-mysql/password}
+    ssl_mode: disable
+  paths:
+    data: /var/lib/grafana/
+    logs: /var/log/grafana
+    plugins: /var/lib/grafana/plugins
+    provisioning: /etc/grafana/provisioning
