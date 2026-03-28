@@ -5,6 +5,6 @@ app.get('/', (req, res) => {
   res.send('Hello from Auto-Instrumented App!');
 });
 
-app.listen(3000, () => {
-  console.log('App running on port 3000');
+app.listen(3300, () => {
+  console.log('App running on port 3300');
 });
