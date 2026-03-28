@@ -19,7 +19,7 @@ helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm
 helm repo update
 
 echo -e "\n"
-cd opentelemetry-operator
+cd opentelemetry-collector
 ls -l
 
 helm upgrade --install otel-collector open-telemetry/opentelemetry-collector -n observability -f values.yaml
