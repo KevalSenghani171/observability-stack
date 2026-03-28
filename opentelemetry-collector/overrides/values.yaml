@@ -1,12 +1,45 @@
+mode: deployment
+
+image:
+  repository: otel/opentelemetry-collector-contrib
+
+service:
+  type: ClusterIP
+  ports:
+    - name: otlp-grpc
+      port: 4317
+    - name: otlp-http
+      port: 4318
+    - name: jaeger-ui
+      port: 16686
+
 config:
   exporters:
     otlp/jaeger:
       endpoint: jaeger-collector.observability.svc.cluster.local:4317
       tls:
         insecure: true
+  receivers:
+    otlp:
+      protocols:
+        grpc:
+        http:
+
+  # processors:
+  #   batch:
+
+  # exporters:
+  #   debug:
+
+  extensions:
+    jaeger_query:
+      storage:
+        traces: memory
+
   service:
+    extensions: [jaeger_query]
     pipelines:
       traces:
         receivers: [otlp]
         processors: [batch]
-        exporters: [otlp/jaeger]
+        exporters: [debug]
