@@ -16,6 +16,6 @@ spec:
     spec:
       containers:
         - name: app
-          image: <your-dockerhub-username>/otel-auto-demo:latest
+          image: kevalsenghani/otel-auto-demo:latest
           ports:
-            - containerPort: 3000
+            - containerPort: 3300

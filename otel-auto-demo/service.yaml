@@ -7,5 +7,5 @@ spec:
     app: otel-auto-demo
   ports:
     - port: 80
-      targetPort: 3000
-  type: ClusterIP
+      targetPort: 3300
+  type: NodePort
