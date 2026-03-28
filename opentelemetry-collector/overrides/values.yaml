@@ -4,14 +4,14 @@ image:
   repository: otel/opentelemetry-collector-contrib
 
 service:
-  type: ClusterIP
-  ports:
-    - name: otlp-grpc
-      port: 4317
-    - name: otlp-http
-      port: 4318
-    - name: jaeger-ui
-      port: 16686
+  otlp:
+    enabled: true
+  otlp-http:
+    enabled: true
+  jaeger-ui:            # 👈 custom port name
+    enabled: true
+    containerPort: 16686
+    servicePort: 16686
 
 config:
   exporters:
