@@ -22,7 +22,7 @@ echo -e "\n"
 cd jaeger
 ls -l
 
-helm upgrade --install jaeger jaegertracing/jaeger -n observability -f values.yaml -f overrides/values.yaml
+helm upgrade --install jaeger jaegertracing/jaeger -n observability -f values.yaml --set strategy=allInOne
     
 
 kubectl get all -n  observability 
