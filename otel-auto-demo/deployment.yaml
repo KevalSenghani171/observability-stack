@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: otel-auto-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: otel-auto-demo
+  template:
+    metadata:
+      labels:
+        app: otel-auto-demo
+      annotations:
+        instrumentation.opentelemetry.io/inject-nodejs: "true"
+    spec:
+      containers:
+        - name: app
+          image: <your-dockerhub-username>/otel-auto-demo:latest
+          ports:
+            - containerPort: 3000
