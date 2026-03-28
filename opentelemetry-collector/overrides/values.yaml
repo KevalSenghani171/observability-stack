@@ -1,27 +1,22 @@
-mode: deployment
+collector:
+  enabled: true
 
-image:
-  repository: otel/opentelemetry-collector-contrib
+allInOne:
+  enabled: false
 
-config:
-  receivers:
-    otlp:
-      protocols:
-        grpc:
-        http:
+query:
+  enabled: true
 
-  processors:
-    batch:
+# config:
+#   exporters:
+#     otlp/jaeger:
+#       endpoint: jaeger-collector.observability.svc.cluster.local:4317
+#       tls:
+#         insecure: true
 
-  exporters:
-    jaeger:
-      endpoint: jaeger-collector.observability.svc.cluster.local:4317
-      tls:
-        insecure: true
-
-  service:
-    pipelines:
-      traces:
-        receivers: [otlp]
-        processors: [batch]
-        exporters: [jaeger]
+#   service:
+#     pipelines:
+#       traces:
+#         receivers: [otlp]
+#         processors: [batch]
+#         exporters: [otlp/jaeger]
