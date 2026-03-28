@@ -22,7 +22,7 @@ echo -e "\n"
 cd opentelemetry-operator
 ls -l
 
-helm upgrade --install otel-collector open-telemetry/opentelemetry-collector -n observability -f values.yaml -f otel-values.yaml
+helm upgrade --install otel-collector open-telemetry/opentelemetry-collector -n observability -f values.yaml
     
 
 kubectl get all -n  observability 
