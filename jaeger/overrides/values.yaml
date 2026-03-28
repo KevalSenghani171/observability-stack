@@ -1,0 +1,12 @@
+# Test with default values
+# This ensures the chart works with minimal configuration
+
+jaeger:
+  enabled: true
+
+query:
+  enabled: true
+
+  service:
+    type: ClusterIP
+    port: 16686
