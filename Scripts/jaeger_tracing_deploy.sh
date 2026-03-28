@@ -19,7 +19,7 @@ helm repo add jaegertracing https://jaegertracing.github.io/helm-charts
 helm repo update
 
 echo -e "\n"
-cd opentelemetry-operator
+cd jaeger
 ls -l
 
 helm upgrade --install jaeger jaegertracing/jaeger -n observability -f values.yaml
