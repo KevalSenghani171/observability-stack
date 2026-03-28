@@ -22,8 +22,10 @@ echo -e "\n"
 cd opentelemetry-operator
 ls -l
 
-helm upgrade --install otel-operator open-telemetry/opentelemetry-operator -n observability -f values.yaml
-    
+helm upgrade --install opentelemetry-operator open-telemetry/opentelemetry-operator -n observability \
+--set "manager.collectorImage.repository=ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s" \
+--set admissionWebhooks.certManager.enabled=false \
+--set admissionWebhooks.autoGenerateCert.enabled=true
 
 kubectl get all -n  observability 
 
