@@ -2,7 +2,7 @@ mode: deployment
 
 image:
   repository: otel/opentelemetry-collector-contrib
-  
+
 service:
   type: ClusterIP
 
@@ -41,12 +41,13 @@ config:
   #   debug:
 
   extensions:
+    health_check: {}
     jaeger_query:
       storage:
         traces: memory
 
   service:
-    extensions: [jaeger_query]
+    extensions: [health_check, jaeger_query]
     pipelines:
       traces:
         receivers: [otlp]
