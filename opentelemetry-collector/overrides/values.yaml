@@ -2,13 +2,22 @@ mode: deployment
 
 image:
   repository: otel/opentelemetry-collector-contrib
-
+  
 service:
+  type: ClusterIP
+
+ports:
   otlp:
     enabled: true
+    containerPort: 4317
+    servicePort: 4317
+
   otlp-http:
     enabled: true
-  jaeger-ui:            # 👈 custom port name
+    containerPort: 4318
+    servicePort: 4318
+
+  jaeger-ui:
     enabled: true
     containerPort: 16686
     servicePort: 16686
