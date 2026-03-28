@@ -22,8 +22,8 @@ echo -e "\n"
 cd jaeger
 ls -l
 
-helm install jaeger jaegertracing/jaeger -n observability --set allInOne.enabled=false --set collector.enabled=true --set query.enabled=true
-    
+helm install jaeger jaegertracing/jaeger -n observability -f values.yaml -f overrides/values.yaml
+
 
 kubectl get all -n  observability 
 

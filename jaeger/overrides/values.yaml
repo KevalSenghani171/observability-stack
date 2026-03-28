@@ -3,3 +3,12 @@
 
 jaeger:
   enabled: true
+
+allInOne:
+  enabled: false
+
+collector:
+  enabled: true
+
+query:
+  enabled: true
