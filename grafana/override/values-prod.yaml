@@ -1,3 +1,25 @@
+
+image:
+  registry: docker.io
+  repository: grafana/grafana
+  tag: "12.3.1"
+
+persistence:
+  type: pvc
+  enabled: false
+  storageClassName: ebs-sc
+  accessModes:
+    - ReadWriteOnce
+  size: 5Gi
+  finalizers:
+    - kubernetes.io/pvc-protection
+
+service:
+  enabled: true
+  type: NodePort
+  port: 3000
+  targetPort: 3000
+
 resources:
   limits:
     cpu: "1"

@@ -26,7 +26,7 @@
 
 alertmanager:
   persistentVolume:
-    storageClass: mimir-ebs-sc
+    storageClass: ebs-sc
     size: 5Gi
     enabled: true
   replicas: 1
@@ -46,7 +46,7 @@ alertmanager:
 
 compactor:
   persistentVolume:
-    storageClass: mimir-ebs-sc
+    storageClass: ebs-sc
     size: 5Gi
   resources:
     # limits:
@@ -75,7 +75,7 @@ distributor:
 
 ingester:
   persistentVolume:
-    storageClass: mimir-ebs-sc
+    storageClass: ebs-sc
     size: 5Gi
   replicas: 1
   resources:
@@ -211,7 +211,7 @@ ruler:
 
 store_gateway:
   persistentVolume:
-    storageClass: mimir-ebs-sc
+    storageClass: ebs-sc
     size: 5Gi
   replicas: 1
   resources:

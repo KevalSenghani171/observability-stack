@@ -1558,7 +1558,7 @@ singleBinary:
     # If set to "-", storageClassName: "", which disables dynamic provisioning.
     # If empty or set to null, no storageClassName spec is
     # set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack).
-    storageClass: loki-ebs-sc
+    storageClass: ebs-sc
     # -- Selector for persistent disk
     selector: null
     # -- Annotations for volume claim
@@ -1700,7 +1700,7 @@ write:
     # If set to "-", storageClassName: "", which disables dynamic provisioning.
     # If empty or set to null, no storageClassName spec is
     # set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack).
-    storageClass: loki-ebs-sc
+    storageClass: ebs-sc
     # -- Selector for persistent disk
     selector: null
     # -- Annotations for volume claim
@@ -1827,7 +1827,7 @@ read:
     # If set to "-", storageClassName: "", which disables dynamic provisioning.
     # If empty or set to null, no storageClassName spec is
     # set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack).
-    storageClass: loki-ebs-scl
+    storageClass: ebs-sc
     # -- Selector for persistent disk
     selector: null
     # -- Annotations for volume claim
@@ -1952,7 +1952,7 @@ backend:
     # If set to "-", storageClassName: "", which disables dynamic provisioning.
     # If empty or set to null, no storageClassName spec is
     # set, choosing the default provisioner (gp2 on AWS, standard on GKE, AWS, and OpenStack).
-    storageClass: loki-ebs-sc
+    storageClass: ebs-sc
     # -- Selector for persistent disk
     selector: null
     # -- Annotations for volume claim

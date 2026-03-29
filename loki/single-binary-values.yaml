@@ -30,6 +30,16 @@ loki:
 
 deploymentMode: SingleBinary
 singleBinary:
+  persistence:
+      whenScaled: Delete
+      whenDeleted: Delete
+      enableStatefulSetAutoDeletePVC: true
+      enableStatefulSetRecreationForSizeChange: false
+      enabled: true
+      accessModes:
+        - ReadWriteOnce
+      size: 5Gi
+      storageClass: ebs-sc
   replicas: 1
   resources:
     limits:

@@ -453,7 +453,7 @@ extraContainerVolumes: []
 persistence:
   type: pvc
   enabled: false
-  storageClassName: grafana-ebs-sc
+  storageClassName: ebs-sc
   ## (Optional) Use this to bind the claim to an existing PersistentVolume (PV) by name.
   volumeName: ""
   accessModes:
@@ -466,7 +466,7 @@ persistence:
   ## Sub-directory of the PV to mount. Can be templated.
   # subPath: ""
   ## Name of an existing PVC. Can be templated.
-  existingClaim: grafana-pvc
+  # existingClaim: grafana-pvc
   ## Extra labels to apply to a PVC.
   extraPvcLabels: {}
   disableWarning: false

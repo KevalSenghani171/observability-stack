@@ -1,0 +1,10 @@
+server:
+  image:
+    repository: quay.io/prometheus/prometheus
+    tag: ""
+  persistentVolume:
+    enabled: true
+    storageClass: "ebs-sc"
+    accessModes:
+      - ReadWriteOnce
+    size: 10Gi

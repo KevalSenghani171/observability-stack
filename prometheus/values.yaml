@@ -552,7 +552,7 @@ server:
     ## Prometheus server data Persistent Volume existing claim name
     ## Requires server.persistentVolume.enabled: true
     ## If defined, PVC must be created manually before volume will be bound
-    existingClaim: "prometheus-pvc"
+    # existingClaim: "prometheus-pvc"
 
     ## Prometheus server data Persistent Volume mount root path
     ##
@@ -569,7 +569,7 @@ server:
     ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
     ##   GKE, AWS & OpenStack)
     ##
-    storageClass: "prometheus-ebs-sc"
+    # storageClass: "prometheus-ebs-sc"
 
     ## Subdirectory of Prometheus server data Persistent Volume to mount
     ## Useful if the volume's root directory is not empty
