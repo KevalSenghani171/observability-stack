@@ -70,14 +70,25 @@ agent:
     pullSecrets:
     - name: dockerhub-creds
   extraEnvVars:
-    - name: GIT_USERNAME
+    - name: MYSQL_USER
       valueFrom:
         secretKeyRef:
-          name: git-credentials
-          key: GIT_USERNAME
+          name: grafana-mysql
+          key: MYSQL_USER
 
-    - name: GIT_PASSWORD
+    - name: MYSQL_PASSWORD
       valueFrom:
         secretKeyRef:
-          name: git-credentials
-          key: GIT_PASSWORD
+          name: grafana-mysql
+          key: MYSQL_PASSWORD
+    - name: MYSQL_USER
+      valueFrom:
+        secretKeyRef:
+          name: grafana-mysql
+          key: MYSQL_USER
+
+    - name: MYSQL_HOST
+      valueFrom:
+        secretKeyRef:
+          name: grafana-mysql
+          key: MYSQL_HOST
