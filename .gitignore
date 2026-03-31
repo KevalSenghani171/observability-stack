@@ -3,3 +3,5 @@
 **/*.tfstate
 **/*.tfstate.*
 **/*.pem
+# gocd
+**/prod_gocd_env.platform.gocd.*

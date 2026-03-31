@@ -1,6 +1,6 @@
 format_version: 10
 pipelines:
-  CertManager-deploy:
+  Gocd-deploy:
     group: Grafana_Prometheus
     label_template: ${COUNT}
     lock_behavior: none
@@ -26,7 +26,7 @@ pipelines:
             allow_only_on_success: false
 
           jobs:
-            certmanager_deploy:
+            tempo_deploy:
               timeout: 0
               elastic_profile_id: demo-app
               tasks:
@@ -35,5 +35,5 @@ pipelines:
                     arguments:
                       - -c
                       - |
-                        bash Scripts/certmanager_deploy.sh
+                        bash Scripts/gocd_deploy.sh
                     run_if: passed
