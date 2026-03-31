@@ -83,10 +83,10 @@ dashboardProviders:
 grafana.ini:
   database:
     type: mysql
-    host: grafana-mysql.c7goqse0ynvz.ap-south-1.rds.amazonaws.com:3306
+    host: ${MYSQL_HOST}
     name: grafana
-    user: grafana_user
-    password: $__file{/etc/secrets/grafana-mysql/password}
+    user: ${MYSQL_USER}
+    password: ${MYSQL_PASSWORD}
     ssl_mode: disable
   paths:
     data: /var/lib/grafana/
