@@ -21,7 +21,7 @@ echo -e "\n"
 cd prometheus 
 ls -l
 
-helm upgrade --install prometheus prometheus-community/prometheus -f values.yaml  -n devops-tools    
+helm upgrade --install prometheus prometheus-community/prometheus -f values.yaml -f override/values.yaml -n devops-tools    
 
 kubectl get all -n  devops-tools 
 
