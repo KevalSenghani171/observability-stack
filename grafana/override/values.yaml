@@ -51,7 +51,21 @@ extraInitContainers:
 extraVolumeMounts:
   - name: grafana-provisioning
     mountPath: /var/lib/grafana/dashboards
-
+  - name: MYSQL_USER
+    valueFrom:
+      secretKeyRef:
+        name: grafana-mysql
+        key: MYSQL_USER
+  - name: MYSQL_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: grafana-mysql
+        key: MYSQL_PASSWORD
+  - name: MYSQL_HOST
+    valueFrom:
+      secretKeyRef:
+        name: grafana-mysql
+        key: MYSQL_HOST
 # extraVolumes:
 #   - name: grafana-provisioning
 #     persistentVolumeClaim:
