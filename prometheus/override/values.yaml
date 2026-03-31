@@ -1,0 +1,15 @@
+server:
+  image:
+    repository: quay.io/prometheus/prometheus
+    tag: "v3.10.0"
+  persistentVolume:
+    enabled: true
+    storageClass: "ebs-sc"
+    accessModes:
+      - ReadWriteOnce
+    size: 10Gi
+
+# extraScrapeConfigs: |
+#   - job_name: prometheus-test2
+#     static_configs:
+#       - targets: ['localhost:9090']
