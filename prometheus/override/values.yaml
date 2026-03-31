@@ -10,7 +10,7 @@ server:
     size: 10Gi
 
 
-extraScrapeConfigs:
+extraScrapeConfigs: |
   - job_name: prometheus-test2
     static_configs:
       - targets: ['localhost:9090']
