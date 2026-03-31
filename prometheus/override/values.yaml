@@ -1,6 +1,6 @@
 server:
   image:
-    repository: prom/prometheus
+    repository: quay.io/prometheus/prometheus
     tag: "3.10.0"
   persistentVolume:
     enabled: true
