@@ -21,7 +21,7 @@ echo -e "\n"
 cd gocd 
 ls -l
 
-helm upgrade --install gocd gocd/gocd -n gocd -f values.yaml  -n gocd    
+helm upgrade --install gocd gocd/gocd -n gocd -f values.yaml -f override/values.yaml -n gocd    
 
 kubectl get all -n  gocd 
 

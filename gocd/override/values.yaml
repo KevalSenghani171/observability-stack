@@ -1,0 +1,83 @@
+server:
+  enabled: true
+
+  config:
+    elastic:
+      profiles:
+        - id: helm-kubectl-agent
+          clusterProfileId: k8s-cluster
+          properties:
+            Image: kevalsenghani/gocd-agent-helm-kubectl:latest
+            ImagePullSecrets: dockerhub-creds
+            PodSpec:
+              apiVersion: v1
+              kind: Pod
+              spec:
+                serviceAccountName: gocd-agent
+                containers:
+                  - name: gocd-agent
+                    image: kevalsenghani/gocd-agent-helm-kubectl:latest
+                    imagePullPolicy: IfNotPresent
+                    resources:
+                      requests:
+                        cpu: "500m"
+                        memory: "512Mi"
+                      limits:
+                        cpu: "1"
+                        memory: "1Gi"
+            clusterProfiles:
+        - id: k8s-cluster
+          pluginId: cd.go.contrib.elasticagent.kubernetes
+          properties:
+            KubernetesClusterUrl: https://kubernetes.default.svc
+            KubernetesClusterName: app-cluster
+            GoServerUrl: https://gocd-server.gocd.svc.cluster.local:8154/go
+            GoServerSslVerificationMode: none
+            Namespace: gocd
+  service:
+    type: "NodePort"
+    httpPort: 8153
+
+  persistence:
+    enabled: true
+    storageClass: "ebs-sc"
+
+rbac:
+  create: true
+  apiVersion: v1
+  roleRef: ""
+  rules:
+    - apiGroups: ["*"]
+      resources: ["*"]
+      verbs: ["*"]
+
+serviceAccount:
+  create: true
+  name: gocd-agent-sa
+  annotations:
+  automountServiceAccountToken: true
+
+  persistence:
+    enabled: true
+    storageClass: "ebs-sc"
+
+
+agent:
+  image:
+    repository: "kevalsenghani/gocd-agent-helm-kubectl"
+    tag: latest
+    pullPolicy: "IfNotPresent"
+    pullSecrets:
+    - name: dockerhub-creds
+  env:
+    - name: GIT_USERNAME
+      valueFrom:
+        secretKeyRef:
+          name: git-credentials
+          key: GIT_USERNAME
+
+    - name: GIT_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: git-credentials
+          key: GIT_PASSWORD
