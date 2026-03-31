@@ -69,7 +69,7 @@ agent:
     pullPolicy: "IfNotPresent"
     pullSecrets:
     - name: dockerhub-creds
-  env:
+  extraEnvVars:
     - name: GIT_USERNAME
       valueFrom:
         secretKeyRef:
