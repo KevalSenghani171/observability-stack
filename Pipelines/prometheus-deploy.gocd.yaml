@@ -10,8 +10,6 @@ pipelines:
       git-670ccc0:
         git: https://github.com/KevalSenghani171/observability-stack.git
         branch: main
-        username: ${GIT_USERNAME}
-        encrypted_password: ${GIT_PASSWORD}
         auto_update: true
 
     stages:
