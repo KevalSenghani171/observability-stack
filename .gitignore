@@ -4,4 +4,4 @@
 **/*.tfstate.*
 **/*.pem
 # gocd
-Pipelines/prod_gocd_env.platform*
+**/prod_gocd_env.platform*
