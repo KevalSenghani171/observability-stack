@@ -1,10 +1,19 @@
 # Jaeger
 
-# Jaeger is an open-source, cloud-native distributed tracing platform used to monitor, troubleshoot, and optimize complex microservices-based applications.
+Jaeger is an open-source, cloud-native distributed tracing platform used to monitor, troubleshoot, and optimize microservices-based applications.
 
+---
 
-# Steps 1: added overrides/values.yaml for additional parameter optimisation.
+## 🚀 Setup Steps
 
-# Steps 2: Run Jaeger-Tracing-deploy Pipeline in GOCD.
+### Step 1: Configure Values
+Update `overrides/values.yaml` with the required parameters and optimizations.
 
-# Steps 3: kubectl port-forward --namespace observability {JAEGER_POD} 16686:16686 --address 0.0.0.0
+### Step 2: Deploy Jaeger
+Run the **Jaeger-Tracing-deploy** pipeline in GOCD.
+
+### Step 3: Access Jaeger UI
+Forward the Jaeger UI port:
+
+```bash
+kubectl port-forward --namespace observability <JAEGER_POD> 16686:16686 --address 0.0.0.0

@@ -28,11 +28,11 @@ resources:
     cpu: "1"
     memory: 1Gi
 
-extraSecretMounts:
-  - name: grafana-mysql
-    secretName: grafana-mysql
-    mountPath: /etc/secrets/grafana-mysql
-    readOnly: true
+# extraSecretMounts:
+#   - name: grafana-mysql
+#     secretName: grafana-mysql
+#     mountPath: /etc/secrets/grafana-mysql
+#     readOnly: true
 
 podSecurityContext:
   fsGroup: 472
@@ -60,13 +60,6 @@ envFromSecrets:
 #     persistentVolumeClaim:
 #       claimName: grafana-provisioning-pvc
 
-# extraVolumeMounts:
-#   - name: grafana-provisioning
-#     mountPath: /var/lib/grafana/dashboards/OBS
-#     readOnly: false
-#   - name: grafana-provisioning
-#     mountPath: /etc/grafana/provisioning
-#     readOnly: false
 
 dashboardProviders:
   dashboardproviders.yaml:
