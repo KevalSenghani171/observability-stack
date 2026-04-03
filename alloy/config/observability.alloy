@@ -1,0 +1,19 @@
+// alloy config
+otelcol.receiver.otlp "default" {
+  grpc {}
+  http {}
+}
+
+otelcol.exporter.prometheus "metrics" {
+  forward_to = [prometheus.remote_write.default.receiver]
+}
+
+otelcol.exporter.loki "logs" {
+  endpoint = "http://loki:3100/loki/api/v1/push"
+}
+
+pyroscope.write "default" {
+  endpoint {
+    url = "http://pyroscope:4040"
+  }
+}

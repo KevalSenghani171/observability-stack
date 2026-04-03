@@ -1,6 +1,6 @@
 format_version: 10
 pipelines:
-  Prometheus-deploy:
+  Pyroscope-deploy:
     group: Observability_Stack
     label_template: ${COUNT}
     lock_behavior: none
@@ -10,6 +10,7 @@ pipelines:
       git-670ccc0:
         git: https://github.com/KevalSenghani171/observability-stack.git
         branch: main
+        shallow_clone: false
         auto_update: true
 
     stages:
@@ -23,7 +24,7 @@ pipelines:
             allow_only_on_success: false
 
           jobs:
-            tempo_deploy:
+            pyroscope_deploy:
               timeout: 0
               elastic_profile_id: demo-app
               tasks:
@@ -32,5 +33,5 @@ pipelines:
                     arguments:
                       - -c
                       - |
-                        bash Scripts/prometheus_deploy.sh
+                        bash Scripts/pyroscope_deploy.sh
                     run_if: passed

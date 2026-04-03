@@ -1,7 +1,7 @@
 format_version: 10
 pipelines:
   Loki-deploy:
-    group: Grafana_Prometheus
+    group: Observability_Stack
     label_template: ${COUNT}
     lock_behavior: none
     display_order: -1
