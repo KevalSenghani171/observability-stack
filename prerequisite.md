@@ -112,4 +112,4 @@ kubectl create secret docker-registry dockerhub-creds \
 kubectl create secret generic grafana-mysql \
   --from-literal=MYSQL_USER={user} \
   --from-literal=MYSQL_PASSWORD='{Password}' \
-  --from-literal=MYSQL_HOST={Host}:3306
+  --from-literal=MYSQL_HOST={Host}:3306 -n devops-tools
