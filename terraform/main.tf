@@ -204,6 +204,10 @@ apt update
 apt install -y kubelet kubeadm
 systemctl enable kubelet
 
+chmod +x get_helm.sh
+./get_helm.sh
+
+
 EOF
 
   tags = {
