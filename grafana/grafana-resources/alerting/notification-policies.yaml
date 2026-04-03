@@ -1,9 +1,0 @@
-apiVersion: v1
-policies:
-  - orgId: 1
-    receiver: grafana-default-email
-    routes:
-      - receiver: gocd-contact-point
-        matcher: 
-        - Application: test
-        groupBy: ['alertname']
