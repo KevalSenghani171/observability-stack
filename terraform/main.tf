@@ -134,12 +134,7 @@ chown ubuntu:ubuntu /home/ubuntu/.kube/config
 # install calico
 su - ubuntu -c "kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.27.2/manifests/calico.yaml"
 
-# wait for API
-sleep 60
 
-# create join command
-kubeadm token create --print-join-command > /home/ubuntu/join.sh
-chmod +x /home/ubuntu/join.sh
 EOF
 
   tags = {
@@ -148,7 +143,7 @@ EOF
 }
 # EC2 Instances
 resource "aws_instance" "worker" {
-  count         = 2
+  count         = 4
   ami           = var.ami_id
   instance_type = var.instance_type
 
@@ -209,15 +204,6 @@ apt update
 apt install -y kubelet kubeadm
 systemctl enable kubelet
 
-# wait for master ready
-sleep 120
-
-# fetch join command
-MASTER_IP=${aws_instance.master.private_ip}
-scp -o StrictHostKeyChecking=no ubuntu@$MASTER_IP:/home/ubuntu/join.sh /join.sh
-
-chmod +x /join.sh
-bash /join.sh
 EOF
 
   tags = {
