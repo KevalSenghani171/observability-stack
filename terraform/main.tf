@@ -76,55 +76,70 @@ resource "aws_instance" "master" {
   associate_public_ip_address = true
   user_data = <<-EOF
 #!/bin/bash
-#!/bin/bash
 set -e
+exec > /var/log/user-data.log 2>&1
 
+# ------------------------
+# SYSTEM PREP
+# ------------------------
+swapoff -a
+sed -i '/ swap / s/^/#/' /etc/fstab
+
+modprobe overlay
+modprobe br_netfilter
+
+cat <<EOT > /etc/sysctl.d/k8s.conf
+net.bridge.bridge-nf-call-iptables=1
+net.bridge.bridge-nf-call-ip6tables=1
+net.ipv4.ip_forward=1
+EOT
+
+sysctl -p /etc/sysctl.d/k8s.conf
+
+# ------------------------
+# CONTAINERD
+# ------------------------
 apt update -y
-apt install -y containerd curl apt-transport-https ca-certificates python3
+apt install -y containerd curl apt-transport-https ca-certificates
 
+mkdir -p /etc/containerd
+containerd config default > /etc/containerd/config.toml
+sed -i 's/SystemdCgroup = false/SystemdCgroup = true/' /etc/containerd/config.toml
+
+systemctl restart containerd
 systemctl enable containerd
-systemctl start containerd
 
-mkdir -p /etc/apt/keyrings
-curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.35/deb/Release.key | gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+# ------------------------
+# KUBERNETES
+# ------------------------
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.35/deb/Release.key | gpg --dearmor -o /etc/apt/keyrings/kubernetes.gpg
 
-echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.35/deb/ /" > /etc/apt/sources.list.d/kubernetes.list
+echo "deb [signed-by=/etc/apt/keyrings/kubernetes.gpg] https://pkgs.k8s.io/core:/stable:/v1.35/deb/ /" \
+> /etc/apt/sources.list.d/kubernetes.list
 
 apt update
 apt install -y kubelet kubeadm kubectl
 systemctl enable kubelet
 
-# SYSTEM FIX
-swapoff -a
-sed -i '/ swap / s/^/#/' /etc/fstab
-
-cat <<EOF2 > /etc/sysctl.d/k8s.conf
-net.ipv4.ip_forward=1
-EOF2
-
-sysctl --system
-
-# INIT
-kubeadm init \
-  --apiserver-advertise-address=$(hostname -I | awk '{print $1}') \
-  --pod-network-cidr=192.168.0.0/16
+# ------------------------
+# INIT CLUSTER
+# ------------------------
+kubeadm init --pod-network-cidr=192.168.0.0/16
 
 # kubeconfig
 mkdir -p /home/ubuntu/.kube
 cp /etc/kubernetes/admin.conf /home/ubuntu/.kube/config
 chown ubuntu:ubuntu /home/ubuntu/.kube/config
 
-# Calico
-sleep 30
+# install calico
 su - ubuntu -c "kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.27.2/manifests/calico.yaml"
 
-# Generate join command (NO EXPIRY)
-kubeadm token create --ttl 0 --print-join-command > /join.sh
-chmod +x /join.sh
+# wait for API
+sleep 60
 
-# Serve it over HTTP
-cd /
-nohup python3 -m http.server 8080 &
+# create join command
+kubeadm token create --print-join-command > /home/ubuntu/join.sh
+chmod +x /home/ubuntu/join.sh
 EOF
 
   tags = {
@@ -150,37 +165,56 @@ resource "aws_instance" "worker" {
   user_data = <<-EOF
 #!/bin/bash
 set -e
+exec > /var/log/user-data.log 2>&1
 
+# ------------------------
+# SYSTEM PREP
+# ------------------------
+swapoff -a
+sed -i '/ swap / s/^/#/' /etc/fstab
+
+modprobe overlay
+modprobe br_netfilter
+
+cat <<EOT > /etc/sysctl.d/k8s.conf
+net.bridge.bridge-nf-call-iptables=1
+net.bridge.bridge-nf-call-ip6tables=1
+net.ipv4.ip_forward=1
+EOT
+
+sysctl -p /etc/sysctl.d/k8s.conf
+
+# ------------------------
+# CONTAINERD
+# ------------------------
 apt update -y
 apt install -y containerd curl apt-transport-https ca-certificates
 
+mkdir -p /etc/containerd
+containerd config default > /etc/containerd/config.toml
+sed -i 's/SystemdCgroup = false/SystemdCgroup = true/' /etc/containerd/config.toml
+
+systemctl restart containerd
 systemctl enable containerd
-systemctl start containerd
 
-mkdir -p /etc/apt/keyrings
-curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.35/deb/Release.key | gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+# ------------------------
+# KUBERNETES
+# ------------------------
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.35/deb/Release.key | gpg --dearmor -o /etc/apt/keyrings/kubernetes.gpg
 
-echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.35/deb/ /" > /etc/apt/sources.list.d/kubernetes.list
+echo "deb [signed-by=/etc/apt/keyrings/kubernetes.gpg] https://pkgs.k8s.io/core:/stable:/v1.35/deb/ /" \
+> /etc/apt/sources.list.d/kubernetes.list
 
 apt update
 apt install -y kubelet kubeadm
 systemctl enable kubelet
 
-# SYSTEM FIX
-swapoff -a
-sed -i '/ swap / s/^/#/' /etc/fstab
+# wait for master ready
+sleep 120
 
-cat <<EOF2 > /etc/sysctl.d/k8s.conf
-net.ipv4.ip_forward=1
-EOF2
-
-sysctl --system
-
-# WAIT FOR MASTER API + HTTP
-sleep 240
-
-# Fetch join command dynamically
-curl http://${aws_instance.master.private_ip}:8080/join.sh -o /join.sh
+# fetch join command
+MASTER_IP=${aws_instance.master.private_ip}
+scp -o StrictHostKeyChecking=no ubuntu@$MASTER_IP:/home/ubuntu/join.sh /join.sh
 
 chmod +x /join.sh
 bash /join.sh
