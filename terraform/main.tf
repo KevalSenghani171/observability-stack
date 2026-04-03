@@ -63,7 +63,6 @@ data "aws_iam_instance_profile" "existing" {
 
 
 resource "aws_instance" "master" {
-  count         = 1
   ami           = var.ami_id
   instance_type = var.instance_type
 
