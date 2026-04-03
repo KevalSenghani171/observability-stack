@@ -1,0 +1,4 @@
+apiVersion: v1
+deleteRules: []
+  # - orgId: 1
+  #   uid: asdfasdfasdf
