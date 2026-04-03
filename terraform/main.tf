@@ -156,14 +156,13 @@ swapoff -a
 sed -i '/ swap / s/^/#/' /etc/fstab
 sysctl -w net.ipv4.ip_forward=1
 
-# wait for master
-sleep 120
+# wait for master to be ready
+sleep 180
 
-# fetch join command manually (replace with your master private IP)
-ssh -o StrictHostKeyChecking=no ubuntu@${aws_instance.master.private_ip} "cat /home/ubuntu/join.sh" > /join.sh
-
-chmod +x /join.sh
-bash /join.sh
+# join cluster (NO SSH)
+kubeadm join ${aws_instance.master.private_ip}:6443 \
+  --token $(kubeadm token create) \
+  --discovery-token-unsafe-skip-ca-verification
 EOF
 
   tags = {
