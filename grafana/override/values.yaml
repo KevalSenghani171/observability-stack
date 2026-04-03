@@ -56,8 +56,8 @@ extraVolumes:
 
 extraVolumeMounts:
   - name: grafana-provisioning
-    mountPath: /var/lib/grafana/dashboards
-    
+    mountPath: /etc/grafana/provisioning
+
 envFromSecrets:
   - name: grafana-mysql
 
