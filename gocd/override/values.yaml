@@ -43,23 +43,11 @@ server:
     storageClass: "ebs-sc"
 
 rbac:
-  create: true
-  apiVersion: v1
-  roleRef: ""
-  rules:
-    - apiGroups: ["*"]
-      resources: ["*"]
-      verbs: ["*"]
+  create: false
 
 serviceAccount:
-  create: true
-  name: gocd-agent-sa
-  annotations:
-  automountServiceAccountToken: true
+  create: false
 
-  persistence:
-    enabled: true
-    storageClass: "ebs-sc"
 
 
 agent:

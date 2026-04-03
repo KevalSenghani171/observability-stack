@@ -11,7 +11,7 @@ echo "Listing files:"
 ls -l
 echo -e "\n"
 
-
+kubectl create ns gocd
 
 echo -e "\n"
 helm repo add gocd https://gocd.github.io/helm-chart

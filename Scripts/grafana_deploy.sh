@@ -15,6 +15,8 @@ echo "Listing files:"
 ls -l
 echo -e "\n"
 
+kubectl create ns devops-tools
+
 echo "Using latest values.yaml from Git"
 
 echo -e "\n"
