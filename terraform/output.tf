@@ -3,5 +3,5 @@ output "master_ip" {
 }
 
 output "worker_ip" {
-  value = aws_instance.worker.public_ip
+  value = [for instance in aws_instance.worker : instance.public_ip]
 }

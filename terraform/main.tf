@@ -118,7 +118,7 @@ EOF
   }
 }
 # EC2 Instances
-resource "aws_instance" "worker" {
+resource "aws_instance" "worker-node" {
   count         = 4
   ami           = var.ami_id
   instance_type = var.instance_type
