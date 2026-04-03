@@ -1,32 +1,100 @@
-## ⚡ Prerequisites
+## ⚡ Kubernetes Cluster Setup on EC2 (kubeadm + Terraform)
 
-Before getting started, install and configure the required tools:
+This guide provisions a standalone Kubernetes cluster on AWS EC2 using Terraform and kubeadm, and configures remote access via `kubectl`.
 
-```bash
-# Install AWS CLI
-chmod +x ./install_awscli.sh
-./install_awscli.sh
+---
 
-# Configure AWS credentials
+### 🚀 1. Clone Repository
 
-aws configure
-
-# Install kubectl
-chmod +x ./install_kubectl.sh
-./install_kubectl.sh
-
-# Install Terraform
-chmod +x ./install_terraform.sh
-./install_terraform.sh
-
-## ⚡ Quick Start
-
-### 1️⃣ Clone the Repository
 ```bash
 git clone https://github.com/KevalSenghani171/observability-stack.git
 cd observability-stack
+```
 
+---
 
+### 🛠️ 2. Install Required Tools
+
+```bash
+# AWS CLI
+chmod +x ./install_awscli.sh && ./install_awscli.sh
+aws configure
+
+# kubectl
+chmod +x ./install_kubectl.sh && ./install_kubectl.sh
+
+# Terraform
+chmod +x ./install_terraform.sh && ./install_terraform.sh
+```
+
+---
+
+### ☁️ 3. Provision Infrastructure
+
+```bash
 cd terraform
 terraform init
+terraform plan
 terraform apply
+```
+
+---
+
+### 🔗 4. Join Worker Nodes
+
+On **master node**, generate join command:
+
+```bash
+kubeadm token create --print-join-command
+```
+
+Run the generated command on **each worker node**:
+
+```bash
+sudo kubeadm join <MASTER_IP>:6443 --token <TOKEN> --discovery-token-ca-cert-hash <HASH>
+```
+
+---
+
+### ✅ 5. Verify Cluster
+
+```bash
+kubectl get nodes
+```
+
+---
+
+### ⚙️ 6. Configure kubeconfig (Master)
+
+```bash
+mkdir -p $HOME/.kube
+sudo cp /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+
+# Export for remote access
+sudo cp /etc/kubernetes/admin.conf /home/ubuntu/kubeconfig
+sudo chown ubuntu:ubuntu /home/ubuntu/kubeconfig
+```
+
+---
+
+### 🌐 7. Access Cluster from Local / Another EC2
+
+```bash
+chmod 400 <pem-file>
+
+mkdir -p ~/.kube
+scp -i <pem-file> ubuntu@<MASTER_PUBLIC_IP>:/home/ubuntu/kubeconfig ~/.kube/config
+```
+
+---
+
+### 🧪 8. Validate Access
+
+```bash
+kubectl get nodes
+```
+---
+
+### 🧪 9. Create StorageClass
+kubectl apply -f storageclass-ebs.yaml
