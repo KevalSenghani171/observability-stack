@@ -21,7 +21,7 @@ echo -e "\n"
 cd loki 
 ls -l
 
-helm upgrade --install loki grafana/loki -f values.yaml  -n devops-tools    
+helm upgrade --install loki grafana/loki -f values.yaml -f override/values.yaml -n devops-tools    
 
 kubectl get all -n  devops-tools 
 
