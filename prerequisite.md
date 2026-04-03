@@ -95,6 +95,21 @@ scp -i <pem-file> ubuntu@<MASTER_PUBLIC_IP>:/home/ubuntu/kubeconfig ~/.kube/conf
 kubectl get nodes
 ```
 ---
+### 🧪 9. Install EBS Drivers
+helm repo add aws-ebs-csi-driver https://kubernetes-sigs.github.io/aws-ebs-csi-driver
+helm repo update
+helm install aws-ebs-csi-driver aws-ebs-csi-driver/aws-ebs-csi-driver -n kube-system
 
-### 🧪 9. Create StorageClass
+### 🧪 10. Create StorageClass
 kubectl apply -f storageclass-ebs.yaml
+
+### 🧪 11. Create DockerHub Secrets for pulling image used in gocd agent
+kubectl create secret docker-registry dockerhub-creds \
+  --docker-username={username} \
+  --docker-password={password}
+
+### 🧪 11. Create Grafana Mysql Secrets for connecting to backend Grafana DB
+kubectl create secret generic grafana-mysql \
+  --from-literal=MYSQL_USER={user} \
+  --from-literal=MYSQL_PASSWORD='{Password}' \
+  --from-literal=MYSQL_HOST={Host}:3306
