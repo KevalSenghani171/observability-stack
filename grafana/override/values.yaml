@@ -45,6 +45,9 @@ extraInitContainers:
       - -c
       - |
         mkdir -p /var/lib/grafana/dashboards/OBS
+    volumeMounts:
+      - name: grafana-provisioning
+        mountPath: /var/lib/grafana/dashboards
 
 extraVolumes:
   - name: grafana-provisioning
