@@ -76,41 +76,55 @@ resource "aws_instance" "master" {
   associate_public_ip_address = true
   user_data = <<-EOF
 #!/bin/bash
+#!/bin/bash
 set -e
 
 apt update -y
-apt install -y containerd apt-transport-https ca-certificates curl
+apt install -y containerd curl apt-transport-https ca-certificates python3
 
 systemctl enable containerd
 systemctl start containerd
 
-# Kubernetes install
+mkdir -p /etc/apt/keyrings
 curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.35/deb/Release.key | gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+
 echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.35/deb/ /" > /etc/apt/sources.list.d/kubernetes.list
 
 apt update
 apt install -y kubelet kubeadm kubectl
 systemctl enable kubelet
 
-# sysctl + swap fix
+# SYSTEM FIX
 swapoff -a
 sed -i '/ swap / s/^/#/' /etc/fstab
-sysctl -w net.ipv4.ip_forward=1
 
-# Init cluster
-kubeadm init --pod-network-cidr=192.168.0.0/16 > /home/ubuntu/kubeadm-init.log
+cat <<EOF2 > /etc/sysctl.d/k8s.conf
+net.ipv4.ip_forward=1
+EOF2
+
+sysctl --system
+
+# INIT
+kubeadm init \
+  --apiserver-advertise-address=$(hostname -I | awk '{print $1}') \
+  --pod-network-cidr=192.168.0.0/16
 
 # kubeconfig
 mkdir -p /home/ubuntu/.kube
 cp /etc/kubernetes/admin.conf /home/ubuntu/.kube/config
 chown ubuntu:ubuntu /home/ubuntu/.kube/config
 
-# Install Calico
+# Calico
+sleep 30
 su - ubuntu -c "kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.27.2/manifests/calico.yaml"
 
-# Save join command
-kubeadm token create --print-join-command > /home/ubuntu/join.sh
-chmod +x /home/ubuntu/join.sh
+# Generate join command (NO EXPIRY)
+kubeadm token create --ttl 0 --print-join-command > /join.sh
+chmod +x /join.sh
+
+# Serve it over HTTP
+cd /
+nohup python3 -m http.server 8080 &
 EOF
 
   tags = {
@@ -138,31 +152,38 @@ resource "aws_instance" "worker" {
 set -e
 
 apt update -y
-apt install -y containerd apt-transport-https ca-certificates curl
+apt install -y containerd curl apt-transport-https ca-certificates
 
 systemctl enable containerd
 systemctl start containerd
 
-# Kubernetes install
+mkdir -p /etc/apt/keyrings
 curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.35/deb/Release.key | gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+
 echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.35/deb/ /" > /etc/apt/sources.list.d/kubernetes.list
 
 apt update
 apt install -y kubelet kubeadm
 systemctl enable kubelet
 
-# sysctl + swap fix
+# SYSTEM FIX
 swapoff -a
 sed -i '/ swap / s/^/#/' /etc/fstab
-sysctl -w net.ipv4.ip_forward=1
 
-# wait for master to be ready
-sleep 180
+cat <<EOF2 > /etc/sysctl.d/k8s.conf
+net.ipv4.ip_forward=1
+EOF2
 
-# join cluster (NO SSH)
-kubeadm join ${aws_instance.master.private_ip}:6443 \
-  --token $(kubeadm token create) \
-  --discovery-token-unsafe-skip-ca-verification
+sysctl --system
+
+# WAIT FOR MASTER API + HTTP
+sleep 240
+
+# Fetch join command dynamically
+curl http://${aws_instance.master.private_ip}:8080/join.sh -o /join.sh
+
+chmod +x /join.sh
+bash /join.sh
 EOF
 
   tags = {
