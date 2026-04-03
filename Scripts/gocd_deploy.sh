@@ -14,7 +14,7 @@ echo -e "\n"
 
 
 echo -e "\n"
-helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo add gocd https://gocd.github.io/helm-chart
 helm repo update
 
 echo -e "\n"

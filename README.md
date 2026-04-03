@@ -131,16 +131,20 @@ Before getting started, install and configure the required tools:
 
 ```bash
 # Install AWS CLI
-sh install_awscli.sh
+chmod +x ./install_awscli.sh
+./install_awscli.sh
 
 # Configure AWS credentials
+
 aws configure
 
 # Install kubectl
-sh install_kubectl.sh
+chmod +x ./install_kubectl.sh
+./install_kubectl.sh
 
 # Install Terraform
-sh install_terraform.sh
+chmod +x ./install_terraform.sh
+./install_terraform.sh
 
 ## ⚡ Quick Start
 
