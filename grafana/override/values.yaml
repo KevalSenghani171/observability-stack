@@ -45,20 +45,13 @@ extraInitContainers:
       - -c
       - |
         mkdir -p /var/lib/grafana/dashboards/OBS
-    volumeMounts:
-      - name: grafana-provisioning
-        mountPath: /var/lib/grafana/dashboards
+
 extraVolumeMounts:
   - name: grafana-provisioning
     mountPath: /var/lib/grafana/dashboards
 
 envFromSecrets:
   - name: grafana-mysql
-
-# extraVolumes:
-#   - name: grafana-provisioning
-#     persistentVolumeClaim:
-#       claimName: grafana-provisioning-pvc
 
 
 dashboardProviders:
