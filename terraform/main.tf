@@ -133,7 +133,7 @@ EOF
 }
 # EC2 Instances
 resource "aws_instance" "worker" {
-  count         = 4
+  count         = 2
   ami           = var.ami_id
   instance_type = var.instance_type
 
