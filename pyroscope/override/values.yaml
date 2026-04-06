@@ -6,7 +6,7 @@ pyroscope:
   components:
     querier:
       kind: Deployment
-      replicaCount: 3
+      replicaCount: 1
       resources:
         limits:
           memory: 256Mi
@@ -15,7 +15,7 @@ pyroscope:
           cpu: 10m
     query-frontend:
       kind: Deployment
-      replicaCount: 2
+      replicaCount: 1
       resources:
         limits:
           memory: 256Mi
@@ -24,7 +24,7 @@ pyroscope:
           cpu: 10m
     query-scheduler:
       kind: Deployment
-      replicaCount: 2
+      replicaCount: 1
       resources:
         limits:
           memory: 256Mi
@@ -33,7 +33,7 @@ pyroscope:
           cpu: 10m
     distributor:
       kind: Deployment
-      replicaCount: 2
+      replicaCount: 1
       resources:
         limits:
           memory: 256Mi
@@ -42,7 +42,7 @@ pyroscope:
           cpu: 50m
     ingester:
       kind: StatefulSet
-      replicaCount: 3
+      replicaCount: 1
       resources:
         limits:
           memory: 500Mi
@@ -51,7 +51,7 @@ pyroscope:
           cpu: 100m
     store-gateway:
       kind: StatefulSet
-      replicaCount: 3
+      replicaCount: 1
       persistence:
         # The store-gateway needs not need persistent storage, but we still run it as a StatefulSet
         # This is to avoid having blocks of data being
