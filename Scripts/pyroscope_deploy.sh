@@ -22,7 +22,7 @@ echo -e "\n"
 cd pyroscope 
 ls -l
 
-helm upgrade --install tempo grafana/pyroscope -f values.yaml -f override/values.yaml -n devops-tools    
+helm upgrade --install pyroscope grafana/pyroscope -f values.yaml -f override/values.yaml -n devops-tools    
 
 kubectl get all -n  devops-tools 
 
