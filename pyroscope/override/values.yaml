@@ -82,7 +82,7 @@ pyroscope:
                 fieldRef:
                   fieldPath: metadata.namespace
             - name: MINIO_ENDPOINT
-              value: $(POD_NAMESPACE)-minio
+              value: pyroscope-minio.devops-tools.svc.cluster.local
 
 minio:
   enabled: true
