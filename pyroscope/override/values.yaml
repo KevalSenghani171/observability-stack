@@ -86,3 +86,8 @@ pyroscope:
 
 minio:
   enabled: true
+  persistence:
+    enabled: true
+    storageClass: ebs-sc
+    accessMode: ReadWriteOnce
+    size: 5Gi
