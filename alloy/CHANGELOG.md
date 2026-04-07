@@ -10,6 +10,62 @@ internal API changes are not present.
 Unreleased
 ----------
 
+1.7.0 (2026-04-01)
+----------
+
+### Bug fixes
+
+- Fix `alloy.extraPorts` not applying `nodePort` when `service.type` is `NodePort`. (@siyu77)
+
+### Enhancements
+
+- Set a `K8S_NODE_NAME` environment variable used by the `otelcol.processor.resourcedetection` component. (@armsnyder)
+
+- Update to Grafana Alloy v1.15.0. (@blewis12)
+
+1.6.2 (2026-03-05)
+----------
+
+### Enhancements
+
+- Update to Grafana Alloy v1.14.0. (@blewis12)
+
+1.6.1 (2026-03-02)
+----------
+
+### Enhancements
+
+- Update to Grafana Alloy v1.13.2. (@prateekpandey14)
+
+
+1.6.0 (2026-02-05)
+----------
+
+### Enhancements
+
+- Update to Grafana Alloy v1.13.0. (@ptodev)
+
+1.5.3 (2026-01-28)
+----------
+
+### Enhancements
+
+- Remove `nodes/proxy` RBAC rule and replace with `nodes/pods`. (@petewall)
+
+1.5.2 (2026-01-12)
+----------
+
+### Enhancements
+
+- Update to Grafana Alloy v1.12.2. (@dehaansa)
+
+1.5.1 (2025-12-16)
+----------
+
+### Enhancements
+
+- Update to Grafana Alloy v1.12.1. (@jharvey10)
+
 1.5.0 (2025-12-01)
 ----------
 
