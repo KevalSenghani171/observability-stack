@@ -1,0 +1,15 @@
+mode: single-binary
+
+minio:
+  enabled: false
+
+pyroscope:
+  config:
+    storage:
+      backend: filesystem
+      filesystem:
+        dir: /data
+
+persistence:
+  enabled: true
+  size: 5Gi

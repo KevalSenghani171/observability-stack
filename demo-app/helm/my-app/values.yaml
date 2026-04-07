@@ -1,0 +1,13 @@
+replicaCount: 2
+
+image:
+  repository: my-app
+  tag: latest
+
+service:
+  port: 3000
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
