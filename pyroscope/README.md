@@ -1,6 +1,6 @@
 # pyroscope
 
-![Version: 1.16.0](https://img.shields.io/badge/Version-1.16.0-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.16.0](https://img.shields.io/badge/AppVersion-1.16.0-informational?style=flat-square)
+![Version: 1.19.2](https://img.shields.io/badge/Version-1.19.2-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: 1.19.1](https://img.shields.io/badge/AppVersion-1.19.1-informational?style=flat-square)
 
 🔥 horizontally-scalable, highly-available, multi-tenant continuous profiling aggregation system
 
@@ -16,7 +16,7 @@
 | Repository | Name | Version |
 |------------|------|---------|
 | https://charts.min.io/ | minio(minio) | 4.1.0 |
-| https://grafana.github.io/helm-charts | alloy(alloy) | 1.4.0 |
+| https://grafana.github.io/helm-charts | alloy(alloy) | 1.5.2 |
 | https://grafana.github.io/helm-charts | agent(grafana-agent) | 0.44.2 |
 
 ## Values
@@ -35,6 +35,7 @@
 | architecture.storage.migration.segmentWriterWeight | float | `1` | Specifies the fraction [0:1] that should be send to the v2 write path / segment-writer in combined mode. 0 means no traffics is sent to segment-writer. 1 means 100% of requests are sent to segment-writer. |
 | architecture.storage.v1 | bool | `true` | Enable v1 storage layer. |
 | architecture.storage.v2 | bool | `false` | Enable v2 storage layer. |
+| global.imageRegistry | string | `nil` | Overrides the Docker registry globally for all images |
 | ingress.annotations | object | `{}` |  |
 | ingress.className | string | `""` |  |
 | ingress.enabled | bool | `false` |  |
@@ -48,6 +49,7 @@
 | pyroscope.disableSelfProfile | bool | `true` | Enable or disable Self profile push, useful to test |
 | pyroscope.dnsPolicy | string | `"ClusterFirst"` |  |
 | pyroscope.extraArgs."log.level" | string | `"debug"` |  |
+| pyroscope.extraContainers | list | `[]` |  |
 | pyroscope.extraCustomEnvVars | object | `{}` |  |
 | pyroscope.extraEnvFrom | list | `[]` | Environment variables from secrets or configmaps to add to the pods |
 | pyroscope.extraEnvVars | object | `{}` |  |
@@ -58,6 +60,7 @@
 | pyroscope.grpc.port | int | `9095` |  |
 | pyroscope.grpc.port_name | string | `"grpc"` |  |
 | pyroscope.image.pullPolicy | string | `"IfNotPresent"` |  |
+| pyroscope.image.registry | string | `""` |  |
 | pyroscope.image.repository | string | `"grafana/pyroscope"` |  |
 | pyroscope.image.tag | string | `""` |  |
 | pyroscope.imagePullSecrets | list | `[]` |  |
@@ -72,6 +75,7 @@
 | pyroscope.persistence.annotations | object | `{}` |  |
 | pyroscope.persistence.enabled | bool | `false` |  |
 | pyroscope.persistence.metastore.subPath | string | `".metastore"` |  |
+| pyroscope.persistence.shared.enabled | bool | `true` |  |
 | pyroscope.persistence.shared.subPath | string | `".shared"` |  |
 | pyroscope.persistence.size | string | `"10Gi"` |  |
 | pyroscope.podAnnotations."profiles.grafana.com/cpu.port_name" | string | `"http2"` |  |
