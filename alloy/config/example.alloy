@@ -40,7 +40,7 @@ otelcol.receiver.otlp "default" {
 // =====================
 prometheus.remote_write "default" {
   endpoint {
-    url = "http://prometheus-server:9090/api/v1/write"
+    url = "http://prometheus-server.devops-tools.svc.cluster.local:9090/api/v1/write"
   }
 }
 
@@ -52,7 +52,23 @@ otelcol.exporter.prometheus "metrics" {
 }
 
 otelcol.exporter.loki "logs" {
-  endpoint = "http://loki:3100/loki/api/v1/push"
+  endpoint = "http://loki.devops-tools.svc.cluster.local:3100/loki/api/v1/push"
+}
+
+// =====================
+// Kubernetes Logs Collection
+// =====================
+loki.source.kubernetes "pods" {
+  targets = discovery.kubernetes.pods.targets
+
+  labels = {
+    job       = "kubernetes-pods"
+    namespace = "__meta_kubernetes_namespace"
+    pod       = "__meta_kubernetes_pod_name"
+    container = "__meta_kubernetes_pod_container_name"
+  }
+
+  forward_to = [otelcol.exporter.loki.logs.receiver]
 }
 
 // =====================
