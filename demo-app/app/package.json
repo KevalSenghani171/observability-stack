@@ -5,6 +5,8 @@
   "dependencies": {
     "express": "^4.18.2",
     "prom-client": "^14.1.1",
-    "@pyroscope/nodejs": "latest"
+    "@pyroscope/nodejs": "latest",
+    "@opentelemetry/sdk-node": "latest",
+    "@opentelemetry/exporter-otlp-http": "latest"
   }
 }
