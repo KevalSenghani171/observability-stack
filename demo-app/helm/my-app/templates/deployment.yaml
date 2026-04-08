@@ -17,9 +17,6 @@ spec:
           image: kevalsenghani/my-app:latest
           type: NodePort
           ports:
-          - port: 80
-            targetPort: 3300   # or 3300 if you changed it
-            nodePort: 30007    # 👈 optional (range: 30000-32767)
-            name: http
+            - containerPort: 3300
       imagePullSecrets:
         - name: dockerhub-creds
