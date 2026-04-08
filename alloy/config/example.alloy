@@ -26,3 +26,48 @@ discovery.kubernetes "endpointslices" {
 discovery.kubernetes "ingresses" {
 	role = "ingress"
 }
+
+// =====================
+// Receivers
+// =====================
+otelcol.receiver.otlp "default" {
+  grpc {}
+  http {}
+}
+
+// =====================
+// Prometheus Remote Write
+// =====================
+prometheus.remote_write "default" {
+  endpoint {
+    url = "http://prometheus-server:9090/api/v1/write"
+  }
+}
+
+// =====================
+// Exporters
+// =====================
+otelcol.exporter.prometheus "metrics" {
+  forward_to = [prometheus.remote_write.default.receiver]
+}
+
+otelcol.exporter.loki "logs" {
+  endpoint = "http://loki:3100/loki/api/v1/push"
+}
+
+// =====================
+// Pipelines (IMPORTANT)
+// =====================
+otelcol.service "default" {
+  pipelines {
+    metrics = {
+      receivers = [otelcol.receiver.otlp.default]
+      exporters = [otelcol.exporter.prometheus.metrics]
+    }
+
+    logs = {
+      receivers = [otelcol.receiver.otlp.default]
+      exporters = [otelcol.exporter.loki.logs]
+    }
+  }
+}

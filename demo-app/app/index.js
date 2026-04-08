@@ -7,14 +7,14 @@ const { OTLPMetricExporter } = require('@opentelemetry/exporter-otlp-http');
 
 const sdk = new NodeSDK({
   metricExporter: new OTLPMetricExporter({
-    url: 'http://alloy:4318/v1/metrics',
+    url: 'http://alloy.devops-tools.svc.cluster.local:4318/v1/metrics',
   }),
 });
 
 sdk.start();
 
 pyroscope.init({
-  serverAddress: 'http://pyroscope:4040',
+  serverAddress: 'http://pyroscope.devops-tools.svc.cluster.local:4040',
   appName: 'my-app',
 });
 
