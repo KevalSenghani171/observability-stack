@@ -2,6 +2,17 @@ const express = require('express');
 const client = require('prom-client');
 const pyroscope = require('@pyroscope/nodejs');
 
+const { NodeSDK } = require('@opentelemetry/sdk-node');
+const { OTLPMetricExporter } = require('@opentelemetry/exporter-otlp-http');
+
+const sdk = new NodeSDK({
+  metricExporter: new OTLPMetricExporter({
+    url: 'http://alloy:4318/v1/metrics',
+  }),
+});
+
+sdk.start();
+
 pyroscope.init({
   serverAddress: 'http://pyroscope:4040',
   appName: 'my-app',
