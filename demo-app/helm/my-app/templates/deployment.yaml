@@ -14,6 +14,8 @@ spec:
     spec:
       containers:
         - name: app
-          image: my-app:latest
+          image: kevalsenghani/my-app:latest
           ports:
             - containerPort: 3300
+      imagePullSecrets:
+        - name: dockerhub-creds
