@@ -1087,6 +1087,7 @@ scrapeConfigs:
 # must be a string so you have to add a | after extraScrapeConfigs:
 # example adds prometheus-blackbox-exporter scrape config
 extraScrapeConfigs: ""
+
   # - job_name: 'prometheus-blackbox-exporter'
   #   metrics_path: /probe
   #   params:

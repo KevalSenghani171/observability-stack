@@ -13,6 +13,11 @@ server:
     servicePort: 9090
     type: NodePort
 
+extraScrapeConfigs: |
+  - job_name: 'my-app'
+    static_configs:
+      - targets: ['my-app.default.svc.cluster.local:80']
+
 # extraScrapeConfigs: |
 #   - job_name: prometheus-test2
 #     static_configs:
