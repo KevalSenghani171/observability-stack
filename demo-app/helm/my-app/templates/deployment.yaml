@@ -15,7 +15,6 @@ spec:
       containers:
         - name: app
           image: kevalsenghani/my-app:latest
-          type: NodePort
           ports:
             - containerPort: 3300
       imagePullSecrets:
