@@ -1,14 +1,12 @@
-extraVolumeMounts:
-  - name: varlog
-    mountPath: /var/log
-
-extraVolumes:
-  - name: varlog
-    hostPath:
-      path: /var/log
-
-
 alloy:
+  extraVolumes:
+    - name: varlog
+      hostPath:
+        path: /var/log
+
+  extraVolumeMounts:
+    - name: varlog
+      mountPath: /var/log
   config: |
     logging {
       level  = "info"
