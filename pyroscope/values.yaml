@@ -453,7 +453,7 @@ architecture:
 # Configuration for `alloy` child chart
 # -------------------------------------
 alloy:
-  enabled: true
+  enabled: false
   controller:
     type: "statefulset"
     replicas: 1
