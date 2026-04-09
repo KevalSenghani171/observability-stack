@@ -21,6 +21,9 @@ store_gateway:
 minio:
   enabled: false
 
+alloy:
+  enabled: false
+
 # ✅ Use local filesystem instead of S3
 pyroscope:
   config:
