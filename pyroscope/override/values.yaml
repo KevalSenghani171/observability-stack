@@ -1,5 +1,5 @@
 alloy:
-  enabled: true
+  enabled: false
   configMap:
     content: |-
       logging {
