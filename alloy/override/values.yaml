@@ -44,12 +44,3 @@ alloy:
 
         forward_to = [loki.write.loki.receiver]
       }
-
-      otelcol.service "default" {
-        pipelines {
-          metrics = {
-            receivers = [otelcol.receiver.otlp.default],
-            exporters = [otelcol.exporter.prometheus.metrics],
-          }
-        }
-      } 
