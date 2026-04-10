@@ -455,7 +455,7 @@ architecture:
 alloy:
   enabled: true
   controller:
-    type: "statefulset"
+    type: "daemonset"
     replicas: 1
     podAnnotations:
       profiles.grafana.com/memory.scrape: "true"
