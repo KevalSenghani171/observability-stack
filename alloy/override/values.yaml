@@ -33,14 +33,28 @@ alloy:
       }
 
       loki.source.kubernetes "pods" {
-        targets = discovery.kubernetes.pods.targets
-
-        labels = {
-          job       = "kubernetes-pods",
-          namespace = "__meta_kubernetes_namespace",
-          pod       = "__meta_kubernetes_pod_name",
-          container = "__meta_kubernetes_pod_container_name",
-        }
-
+        targets    = discovery.kubernetes.pods.targets
         forward_to = [loki.write.loki.receiver]
+
+        relabel_rules {
+          rule {
+            source_labels = ["__meta_kubernetes_namespace"]
+            target_label  = "namespace"
+          }
+
+          rule {
+            source_labels = ["__meta_kubernetes_pod_name"]
+            target_label  = "pod"
+          }
+
+          rule {
+            source_labels = ["__meta_kubernetes_pod_container_name"]
+            target_label  = "container"
+          }
+
+          rule {
+            target_label = "job"
+            replacement  = "kubernetes-pods"
+          }
+        }
       }
