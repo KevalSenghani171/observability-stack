@@ -26,3 +26,22 @@ discovery.kubernetes "endpointslices" {
 discovery.kubernetes "ingresses" {
 	role = "ingress"
 }
+
+
+loki.source.kubernetes "pods" {
+  targets = discovery.kubernetes.pods.targets
+
+  labels = {
+    namespace = "__meta_kubernetes_namespace"
+    pod       = "__meta_kubernetes_pod_name"
+    container = "__meta_kubernetes_pod_container_name"
+  }
+
+  forward_to = [loki.write.loki.receiver]
+}
+
+loki.write "loki" {
+  endpoint {
+    url = "http://loki.devops-tools.svc.cluster.local:3100/loki/api/v1/push"
+  }
+}
