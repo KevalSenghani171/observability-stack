@@ -33,10 +33,6 @@ pipelines:
                     arguments:
                       - -c
                       - |
-                        set -e
-                        apt-get update -y
-                        apt-get install -y gettext
-                        which envsubst
                         chmod +x Scripts/grafana_deploy.sh
                         ./Scripts/grafana_deploy.sh
                     run_if: passed
