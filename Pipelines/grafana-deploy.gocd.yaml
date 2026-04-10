@@ -34,17 +34,9 @@ pipelines:
                       - -c
                       - |
                         set -e
-
-                        echo "Installing gettext (envsubst)..."
                         sudo apt-get update -y
                         sudo apt-get install -y gettext
-
-                        echo "Verifying envsubst..."
                         which envsubst
-
-                        echo "Setting permissions..."
                         chmod +x Scripts/grafana_deploy.sh
-
-                        echo "Running deployment script..."
                         ./Scripts/grafana_deploy.sh
                     run_if: passed
