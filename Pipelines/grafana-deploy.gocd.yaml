@@ -33,6 +33,8 @@ pipelines:
                     arguments:
                       - -c
                       - |
+                        sudo apt update
+                        sudo apt install gettext -y
                         chmod +x Scripts/grafana_deploy.sh
                         ./Scripts/grafana_deploy.sh
                     run_if: passed
