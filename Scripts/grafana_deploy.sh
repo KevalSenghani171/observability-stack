@@ -27,7 +27,7 @@ helm repo update
 echo -e "\n"
 cd grafana 
 
-envssubst < grafana-resources/datasources/datasource.yaml.tpl >> grafana-resources/datasources/datasource.yaml
+envsubst < grafana-resources/datasources/datasource.yaml.tpl > grafana-resources/datasources/datasource.yaml
 rm grafana-resources/datasources/datasource.yaml.tpl
 ls -l
 echo ".....Grafana......"
