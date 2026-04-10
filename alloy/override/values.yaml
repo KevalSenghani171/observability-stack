@@ -36,7 +36,7 @@ alloy:
         targets    = discovery.kubernetes.pods.targets
         forward_to = [loki.write.loki.receiver]
 
-        relabel_rules {
+        relabel_configs {
           rule {
             source_labels = ["__meta_kubernetes_namespace"]
             target_label  = "namespace"
