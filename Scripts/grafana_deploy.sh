@@ -48,9 +48,9 @@ kubectl -n devops-tools cp grafana-resources/dashboards/OBS ${grafana_pod}:/var/
 kubectl -n devops-tools exec -it ${grafana_pod} -c grafana -- curl -u admin:Admin@123 -H -s -X POST "http://localhost:3000/api/admin/provisioning/dashboards/reload"
 
 
-kubectl -n devops-tools exec -it ${grafana_pod} -c grafana -- rm -rf /etc/grafana/provisioning/datasources 
-kubectl -n devops-tools cp grafana-resources/datasources ${grafana_pod}:/etc/grafana/provisioning -c grafana
-kubectl -n devops-tools exec -it ${grafana_pod} -c grafana -- curl -u admin:Admin@123 -H -s -X POST "http://localhost:3000/api/admin/provisioning/datasources/reload"
+# kubectl -n devops-tools exec -it ${grafana_pod} -c grafana -- rm -rf /etc/grafana/provisioning/datasources 
+# kubectl -n devops-tools cp grafana-resources/datasources ${grafana_pod}:/etc/grafana/provisioning -c grafana
+# kubectl -n devops-tools exec -it ${grafana_pod} -c grafana -- curl -u admin:Admin@123 -H -s -X POST "http://localhost:3000/api/admin/provisioning/datasources/reload"
 
 kubectl -n devops-tools exec -it ${grafana_pod} -c grafana -- rm -rf /etc/grafana/provisioning/alerting
 kubectl -n devops-tools cp grafana-resources/alerting ${grafana_pod}:/etc/grafana/provisioning -c grafana
