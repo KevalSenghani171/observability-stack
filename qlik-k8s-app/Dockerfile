@@ -1,33 +1,52 @@
+# -------- Build Stage --------
 FROM maven:3.9.6-eclipse-temurin-17 AS build
 WORKDIR /app
-COPY . .
+# Optimize dependency caching
+COPY pom.xml .
+RUN mvn dependency:go-offline
+
+# Copy source and build
+COPY src ./src
 RUN mvn clean package -DskipTests
 
-FROM eclipse-temurin:17-jdk-alpine
+# -------- Runtime Stage --------
+FROM eclipse-temurin:17-jdk
 
-# Download Pyroscope Java Agent
-ADD https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v1.17.0/opentelemetry-javaagent.jar opentelemetry-javaagent.jar
-ADD https://github.com/grafana/otel-profiling-java/releases/download/v1.0.4/pyroscope-otel.jar pyroscope-otel.jar
+WORKDIR /app
 
-ENV PYROSCOPE_APPLICATION_NAME=qlik-java-app
-ENV PYROSCOPE_FORMAT=jfr
-ENV PYROSCOPE_PROFILING_INTERVAL=10ms
-ENV PYROSCOPE_PROFILER_EVENT=itimer
-ENV PYROSCOPE_PROFILER_LOCK=10ms
-ENV PYROSCOPE_PROFILER_ALLOC=512k
-ENV PYROSCOPE_UPLOAD_INTERVAL=15s
-ENV OTEL_JAVAAGENT_EXTENSIONS=./pyroscope-otel.jar
-ENV OTEL_PYROSCOPE_ADD_PROFILE_URL=false
-ENV OTEL_PYROSCOPE_ADD_PROFILE_BASELINE_URL=false
-ENV OTEL_PYROSCOPE_START_PROFILING=true
+# Install curl
+RUN apt-get update && apt-get install -y \
+    curl \
+    libc6 \
+    && rm -rf /var/lib/apt/lists/*
 
-## Useful for debugging
-# ENV PYROSCOPE_LOG_LEVEL=debug
+# Download OpenTelemetry Java Agent
+RUN curl -L -o opentelemetry-javaagent.jar \
+    https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v1.17.0/opentelemetry-javaagent.jar
 
-## Those environment variables need to be overwritten at runtime, if you are using Grafana Cloud
-ENV PYROSCOPE_SERVER_ADDRESS=http://pyroscope.devops-tools.svc.cluster.local:4040
+# Download Pyroscope OTEL extension
+RUN curl -L -o pyroscope-otel.jar \
+    https://github.com/grafana/otel-profiling-java/releases/download/v1.0.4/pyroscope-otel.jar
+
+# Copy built application JAR
 COPY --from=build /app/target/*.jar app.jar
 
+# -------- Environment Variables --------
+ENV PYROSCOPE_APPLICATION_NAME=qlik-java-app \
+    PYROSCOPE_FORMAT=jfr \
+    PYROSCOPE_PROFILER_EVENT=itimer \
+    PYROSCOPE_UPLOAD_INTERVAL=15s \
+    OTEL_JAVAAGENT_EXTENSIONS=/app/pyroscope-otel.jar \
+    OTEL_PYROSCOPE_ADD_PROFILE_URL=false \
+    OTEL_PYROSCOPE_ADD_PROFILE_BASELINE_URL=false \
+    OTEL_PYROSCOPE_START_PROFILING=true \
+    PYROSCOPE_SERVER_ADDRESS=http://pyroscope.devops-tools.svc.cluster.local:4040
+
+# Optional JVM options
+ENV JAVA_OPTS=""
+
+# Expose app port
 EXPOSE 8080
 
-ENTRYPOINT ["java",  "-javaagent:./opentelemetry-javaagent.jar", "-jar", "app.jar" ]
+# Start application
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -javaagent:/app/opentelemetry-javaagent.jar -jar /app/app.jar"]

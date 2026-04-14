@@ -15,5 +15,67 @@ spec:
       containers:
         - name: qlik-app
           image: kevalsenghani/qlik-java-app:latest
+          imagePullPolicy: Always
+
           ports:
             - containerPort: 8080
+
+          env:
+            # -------- OTEL (Tracing - Tempo) --------
+            - name: OTEL_SERVICE_NAME
+              value: "qlik-java-app"
+
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: "http://tempo.devops-tools.svc.cluster.local:4317"
+
+            - name: OTEL_EXPORTER_OTLP_PROTOCOL
+              value: "grpc"
+
+            - name: OTEL_TRACES_EXPORTER
+              value: "otlp"
+
+            - name: OTEL_METRICS_EXPORTER
+              value: "none"
+
+            - name: OTEL_LOGS_EXPORTER
+              value: "none"
+
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.name=qlik-java-app"
+
+            # -------- Pyroscope (Profiling) --------
+            - name: PYROSCOPE_APPLICATION_NAME
+              value: "qlik-java-app"
+
+            - name: PYROSCOPE_SERVER_ADDRESS
+              value: "http://pyroscope.devops-tools.svc.cluster.local:4040"
+
+            - name: PYROSCOPE_FORMAT
+              value: "jfr"
+
+            - name: PYROSCOPE_PROFILING_INTERVAL
+              value: "50ms"
+
+            - name: PYROSCOPE_UPLOAD_INTERVAL
+              value: "30s"
+
+            - name: PYROSCOPE_PROFILER_ALLOC
+              value: "1m"
+
+            - name: PYROSCOPE_PROFILER_LOCK
+              value: "100ms"
+
+            - name: OTEL_PYROSCOPE_START_PROFILING
+              value: "true"
+
+            # -------- JVM Tuning --------
+            - name: JAVA_OPTS
+              value: "-Xms256m -Xmx512m"
+
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "200m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
