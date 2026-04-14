@@ -385,7 +385,7 @@ serviceMonitor:
   # scrapeTimeout: 10s
 
 persistence:
-  enabled: true
+  enabled: false
   storageClass: ebs-sc
     # -- Enable StatefulSetAutoDeletePVC feature
   enableStatefulSetAutoDeletePVC: false
