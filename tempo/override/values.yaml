@@ -1,8 +1,6 @@
 tempo:
   tag: 2.2.2
 
-  config: 
-
   storage:
     trace:
       backend: local
@@ -16,3 +14,7 @@ tempo:
       protocols:
         grpc:
         http:
+
+  persistence:
+    enabled: true
+    size: 5Gi

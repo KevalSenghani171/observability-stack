@@ -23,7 +23,7 @@ annotations: {}
 tempo:
   registry: docker.io
   repository: grafana/tempo
-  tag: latest
+  tag: 2.2.2
   pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
