@@ -15,14 +15,15 @@ tempo:
         name: s3-secret
         key: AWS_SECRET_ACCESS_KEY
   storage:
-    backend: s3
-    s3:
-      endpoint: "https://s3.ap-south-1.amazonaws.com"
-      region: ap-south-1
-      secret_access_key: ${AWS_SECRET_ACCESS_KEY}
-      access_key_id: ${AWS_ACCESS_KEY_ID}
-      bucket: observability-tempo-keval-demo                           # optional. secret key when using static credentials.
-      insecure: false    
+    trace:
+      backend: s3
+      s3:
+        endpoint: "https://s3.ap-south-1.amazonaws.com"
+        region: ap-south-1
+        secret_access_key: ${AWS_SECRET_ACCESS_KEY}
+        access_key_id: ${AWS_ACCESS_KEY_ID}
+        bucket: observability-tempo-keval-demo                           # optional. secret key when using static credentials.
+        insecure: false    
   receivers:
     otlp:
       protocols:
