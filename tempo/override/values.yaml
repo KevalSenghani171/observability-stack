@@ -24,11 +24,7 @@ tempo:
         access_key_id: ${AWS_ACCESS_KEY_ID}
         bucket: observability-tempo-keval-demo                           # optional. secret key when using static credentials.
         insecure: false    
-  receivers:
-    otlp:
-      protocols:
-        grpc:
-        http:
   persistence:
     enabled: true
     size: 5Gi
+    storageClass: ebs-sc
