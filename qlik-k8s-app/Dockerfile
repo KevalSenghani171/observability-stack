@@ -14,9 +14,4 @@ COPY --from=build /app/target/*.jar app.jar
 
 EXPOSE 8080
 
-ENTRYPOINT ["java",
-  "-javaagent:/pyroscope.jar",
-  "-Dpyroscope.application.name=qlik-java-app",
-  "-Dpyroscope.server.address=http://pyroscope.devops-tools.svc.cluster.local:4040",
-  "-jar",
-  "app.jar"]
+ENTRYPOINT ["java","-javaagent:/pyroscope.jar","-Dpyroscope.application.name=qlik-java-app","-Dpyroscope.server.address=http://pyroscope.devops-tools.svc.cluster.local:4040","-jar","app.jar"]
