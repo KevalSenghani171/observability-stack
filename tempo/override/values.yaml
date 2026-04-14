@@ -1,5 +1,6 @@
 tempo:
-  tag: latest
+  tag: 2.2.2
+  memBallastSizeMbs: null
   server:
     http_listen_port: 3200
     grpc_listen_port: 9095
@@ -20,8 +21,6 @@ tempo:
       s3:
         endpoint: "https://s3.ap-south-1.amazonaws.com"
         region: ap-south-1
-        secret_access_key: ${AWS_SECRET_ACCESS_KEY}
-        access_key_id: ${AWS_ACCESS_KEY_ID}
         bucket: observability-tempo-keval-demo                           # optional. secret key when using static credentials.
         insecure: false    
   persistence:
