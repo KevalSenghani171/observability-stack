@@ -1,8 +1,11 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0">
   <modelVersion>4.0.0</modelVersion>
+
   <groupId>com.example</groupId>
   <artifactId>qlik-app</artifactId>
   <version>1.0</version>
+  <name>qlik-java-app</name>
+  <description>Spring Boot Observability App</description>
 
   <parent>
     <groupId>org.springframework.boot</groupId>
@@ -10,19 +13,41 @@
     <version>3.2.5</version>
   </parent>
 
+  <properties>
+    <java.version>17</java.version>
+  </properties>
+
   <dependencies>
+
+    <!-- Web -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
+
+    <!-- Actuator (VERY IMPORTANT for health + metrics) -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-actuator</artifactId>
+    </dependency>
+
   </dependencies>
 
   <build>
+    <finalName>app</finalName> <!-- IMPORTANT for Docker -->
+
     <plugins>
+
+      <!-- Spring Boot Plugin -->
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
+        <configuration>
+          <mainClass>com.example.Application</mainClass>
+        </configuration>
       </plugin>
+
     </plugins>
   </build>
+
 </project>
