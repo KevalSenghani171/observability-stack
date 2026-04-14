@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qlik-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: qlik-app
+  template:
+    metadata:
+      labels:
+        app: qlik-app
+    spec:
+      containers:
+        - name: qlik-app
+          image: kevalsenghani/qlik-java-app:latest
+          ports:
+            - containerPort: 8080

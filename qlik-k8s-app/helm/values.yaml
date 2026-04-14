@@ -1,0 +1,8 @@
+image:
+  repository: kevalsenghani/qlik-java-app
+  tag: latest
+
+service:
+  type: NodePort
+  port: 80
+  targetPort: 8080
