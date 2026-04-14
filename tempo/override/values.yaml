@@ -1,13 +1,11 @@
 tempo:
   tag: 2.2.2
-  
   extraEnv:
   - name: AWS_ACCESS_KEY_ID
     valueFrom:
       secretKeyRef:
         name: s3-secret
         key: AWS_ACCESS_KEY_ID
-
   - name: AWS_SECRET_ACCESS_KEY
     valueFrom:
       secretKeyRef:
@@ -22,12 +20,6 @@ tempo:
       access_key_id: ${AWS_ACCESS_KEY_ID}
       bucket: observability-tempo-keval-demo                           # optional. secret key when using static credentials.
       insecure: false    
-    # trace:
-    #   backend: local
-    #   local:
-    #     path: /var/tempo/traces
-    #   wal:
-    #     path: /var/tempo/wal
   receivers:
     otlp:
       protocols:
