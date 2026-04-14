@@ -1,34 +1,45 @@
 tempo:
-  tag: 2.2.2
-  memBallastSizeMbs: 256
-  server:
-    http_listen_port: 3200
-    grpc_listen_port: 9095
-  extraEnv:
-    - name: AWS_ACCESS_KEY_ID
-      valueFrom:
-        secretKeyRef:
-          name: s3-secret
-          key: AWS_ACCESS_KEY_ID
-    - name: AWS_SECRET_ACCESS_KEY
-      valueFrom:
-        secretKeyRef:
-          name: s3-secret
-          key: AWS_SECRET_ACCESS_KEY
-  storage:
-    trace:
-      backend: s3
-      s3:
-        endpoint: "https://s3.ap-south-1.amazonaws.com"
-        region: ap-south-1
-        bucket: observability-tempo-keval-demo                           # optional. secret key when using static credentials.
-        insecure: false  
-  receivers:
-    otlp:
-      protocols:
-        grpc:
-        http:  
-  persistence:
-    enabled: true
-    size: 5Gi
-    storageClass: ebs-sc
+  traces:
+  otlp:
+    grpc:
+      enabled: true
+    http:
+      enabled: true
+  zipkin:
+    enabled: false
+  jaeger:
+    thriftHttp:
+      enabled: false
+  # tag: 2.2.2
+  # memBallastSizeMbs: 256
+  # server:
+  #   http_listen_port: 3200
+  #   grpc_listen_port: 9095
+  # extraEnv:
+  #   - name: AWS_ACCESS_KEY_ID
+  #     valueFrom:
+  #       secretKeyRef:
+  #         name: s3-secret
+  #         key: AWS_ACCESS_KEY_ID
+  #   - name: AWS_SECRET_ACCESS_KEY
+  #     valueFrom:
+  #       secretKeyRef:
+  #         name: s3-secret
+  #         key: AWS_SECRET_ACCESS_KEY
+  # storage:
+  #   trace:
+  #     backend: s3
+  #     s3:
+  #       endpoint: "https://s3.ap-south-1.amazonaws.com"
+  #       region: ap-south-1
+  #       bucket: observability-tempo-keval-demo                           # optional. secret key when using static credentials.
+  #       insecure: false  
+  # receivers:
+  #   otlp:
+  #     protocols:
+  #       grpc:
+  #       http:  
+  # persistence:
+  #   enabled: true
+  #   size: 5Gi
+  #   storageClass: ebs-sc
