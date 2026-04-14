@@ -154,12 +154,17 @@ tempo:
       #   endpoint: s3.dualstack.us-east-2.amazonaws.com  # api endpoint
       #   access_key: ...                                 # optional. access key when using static credentials.
       #   secret_key: ...                                 # optional. secret key when using static credentials.
-      #   insecure: false                                 # optional. enable if endpoint is http
-      backend: local
-      local:
-        path: /var/tempo/traces
-      wal:
-        path: /var/tempo/wal
+      #   insecure: false   
+      backend: s3
+      s3:
+        endpoint: "https://s3.ap-south-1.amazonaws.com"
+        region: ap-south-1
+        bucket: observability-tempo-keval-demo                           # optional. secret key when using static credentials.                              # optional. enable if endpoint is http
+      # backend: local
+      # local:
+      #   path: /var/tempo/traces
+      # wal:
+      #   path: /var/tempo/wal
   # this configuration will listen on all ports and protocols that tempo is capable of.
   # the receives all come from the OpenTelemetry collector.  more configuration information can
   # be found there: https://github.com/open-telemetry/opentelemetry-collector/tree/master/receiver
@@ -190,7 +195,17 @@ tempo:
   ## Additional container arguments
   extraArgs: {}
   # -- Environment variables to add
-  extraEnv: []
+  extraEnv:
+    - name: AWS_ACCESS_KEY_ID
+      valueFrom:
+        secretKeyRef:
+          name: s3-secret
+          key: AWS_ACCESS_KEY_ID
+    - name: AWS_SECRET_ACCESS_KEY
+      valueFrom:
+        secretKeyRef:
+          name: s3-secret
+          key: AWS_SECRET_ACCESS_KEY
   # -- Environment variables from secrets or configmaps to add to the ingester pods
   extraEnvFrom: []
   # -- Volume mounts to add
