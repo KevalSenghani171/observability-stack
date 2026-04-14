@@ -1,5 +1,8 @@
 tempo:
   tag: 2.2.2
+  server:
+    http_listen_port: 3200
+    grpc_listen_port: 9095
   extraEnv:
   - name: AWS_ACCESS_KEY_ID
     valueFrom:
