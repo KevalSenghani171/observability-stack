@@ -16,16 +16,12 @@ spec:
         - name: qlik-app
           image: kevalsenghani/qlik-java-app:latest
           imagePullPolicy: Always
-
           ports:
             - containerPort: 8080
-
           env:
             - name: OTEL_SERVICE_NAME
               value: "qlik-java-app"
             - name: OTEL_EXPORTER_OTLP_ENDPOINT
-              value: "http://tempo.devops-tools.svc.cluster.local:4317"
-            - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
               value: "http://tempo.devops-tools.svc.cluster.local:4317"
             - name: OTEL_EXPORTER_OTLP_PROTOCOL
               value: "grpc"
@@ -55,7 +51,6 @@ spec:
               value: "true"
             - name: JAVA_OPTS
               value: "-Xms256m -Xmx512m"
-
           resources:
             requests:
               memory: "256Mi"
