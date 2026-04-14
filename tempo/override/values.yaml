@@ -1,7 +1,7 @@
 tempo:
   tag: 2.2.2
 
-  overrides: {}
+  config: 
 
   storage:
     trace:
