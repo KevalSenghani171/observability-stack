@@ -1,6 +1,6 @@
 tempo:
   tag: 2.2.2
-  memBallastSizeMbs: null
+  memBallastSizeMbs: 256
   server:
     http_listen_port: 3200
     grpc_listen_port: 9095
