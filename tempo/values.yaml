@@ -386,7 +386,7 @@ serviceMonitor:
 
 persistence:
   enabled: true
-  storageClassName: ebs-sc
+  storageClass: ebs-sc
     # -- Enable StatefulSetAutoDeletePVC feature
   enableStatefulSetAutoDeletePVC: false
   # storageClassName: local-path
