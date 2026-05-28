@@ -19,10 +19,8 @@ echo -e "\n"
 echo "Using latest values.yaml from Git"
 
 echo -e "\n"
-helm repo add grafana https://grafana.github.io/helm-charts
+helm repo add grafana-community https://grafana-community.github.io/helm-charts
 helm repo update
-
-
 
 echo -e "\n"
 cd grafana 
@@ -33,7 +31,7 @@ ls -l
 echo ".....Grafana......"
 # kubectl create secret generic grafana-mysql -n devops-tools --from-literal=password="$GRAFANA_DB_PASSWORD" --dry-run=client -o yaml | kubectl apply -f -
 
-helm upgrade --install grafana grafana/grafana -f values.yaml -f override/values.yaml  -n devops-tools    
+helm upgrade --install grafana grafana-community/grafana -f values.yaml -f override/values.yaml  -n devops-tools    
 
 kubectl get all -n  devops-tools 
 
