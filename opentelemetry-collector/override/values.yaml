@@ -8,12 +8,34 @@ image:
 mode: "deployment"
 
 
+# config:
+#   exporters:
+#     otlp/tempo:
+#       endpoint: tempo.devops-tools.svc.cluster.local:4317
+#       tls:
+#         insecure: true
+
+#   service:
+#     pipelines:
+#       traces:
+#         exporters:
+#           - debug
+#           - otlp/tempo
+
+
+
 config:
   exporters:
     otlp/tempo:
-      endpoint: tempo.devops-tools.svc.cluster.local:4317
+      endpoint: tempo-distributor.observability.svc.cluster.local:4317
       tls:
         insecure: true
+
+    loki:
+      endpoint: http://loki.devops-tools.svc.cluster.local/loki/api/v1/push
+
+    prometheus:
+      endpoint: "0.0.0.0:8889"
 
   service:
     pipelines:
@@ -21,3 +43,13 @@ config:
         exporters:
           - debug
           - otlp/tempo
+
+      logs:
+        exporters:
+          - debug
+          - loki
+
+      metrics:
+        exporters:
+          - debug
+          - prometheus
