@@ -11,7 +11,7 @@ COPY src ./src
 RUN mvn clean package -DskipTests
 
 # -------- Runtime Stage --------
-FROM eclipse-temurin:17-jdk
+FROM eclipse-temurin:17-jre
 
 WORKDIR /app
 
@@ -23,7 +23,7 @@ RUN apt-get update && apt-get install -y \
 
 # Download OpenTelemetry Java Agent
 RUN curl -L -o /app/opentelemetry-javaagent.jar \
-    https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v1.17.0/opentelemetry-javaagent.jar
+    https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/download/v2.19.0/opentelemetry-javaagent.jar
 
 # Download Pyroscope OTEL extension
 RUN curl -L -o /app/pyroscope-otel.jar \
@@ -33,12 +33,17 @@ RUN curl -L -o /app/pyroscope-otel.jar \
 COPY --from=build /app/target/*.jar /app/app.jar
 
 # -------- Environment Variables (ONLY profiling-related here) --------
-ENV PYROSCOPE_APPLICATION_NAME=qlik-java-app \
-    PYROSCOPE_FORMAT=jfr \
-    PYROSCOPE_UPLOAD_INTERVAL=30s \
+ENV OTEL_SERVICE_NAME=qlik-java-app \
+    OTEL_TRACES_EXPORTER=otlp \
+    OTEL_METRICS_EXPORTER=none \
+    OTEL_LOGS_EXPORTER=none \
+    OTEL_EXPORTER_OTLP_PROTOCOL=grpc \
+    OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector.observability.svc.cluster.local:4317 \
+    OTEL_RESOURCE_ATTRIBUTES="service.name=qlik-java-app,deployment.environment=dev" \
     OTEL_JAVAAGENT_EXTENSIONS=/app/pyroscope-otel.jar \
     OTEL_PYROSCOPE_START_PROFILING=true \
-    PYROSCOPE_SERVER_ADDRESS=http://pyroscope.devops-tools.svc.cluster.local:4040
+    PYROSCOPE_SERVER_ADDRESS=http://pyroscope.devops-tools.svc.cluster.local:4040 \
+    PYROSCOPE_APPLICATION_NAME=qlik-java-app
 
 # JVM options (can override at runtime)
 ENV JAVA_OPTS=""
@@ -51,4 +56,4 @@ RUN useradd -m appuser
 USER appuser
 
 # Start application
-ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -javaagent:/app/opentelemetry-javaagent.jar -jar /app/app.jar"]
+ENTRYPOINT ["sh","-c","exec java $JAVA_OPTS -javaagent:/app/opentelemetry-javaagent.jar -jar /app/app.jar"]
