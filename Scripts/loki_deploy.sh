@@ -14,14 +14,14 @@ echo -e "\n"
 echo "Using latest values.yaml from Git"
 
 echo -e "\n"
-helm repo add grafana https://grafana.github.io/helm-charts
+helm repo add grafana-community https://grafana-community.github.io/helm-charts
 helm repo update
 
 echo -e "\n"
 cd loki 
 ls -l
 
-helm upgrade --install loki grafana/loki -f values.yaml -f override/values.yaml -n devops-tools    
+helm upgrade --install loki grafana-community/loki -f values.yaml -f override/values.yaml -n devops-tools    
 
 kubectl get all -n  devops-tools 
 
