@@ -2,7 +2,7 @@ image:
   # If you want to use the core image `otel/opentelemetry-collector`, you also need to change `command.name` value to `otelcol`.
   repository: "ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s"
   pullPolicy: IfNotPresent
-  tag: "0.158.1"
+  tag: "0.153.0"
 
 
 mode: "deployment"
