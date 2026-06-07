@@ -99,10 +99,10 @@ singleBinary:
     requests:
       cpu: 100m
       memory: 12Mi
-  extraEnv:
-    # Keep a little bit lower than memory limits
-    - name: GOMEMLIMIT
-      value: 3750MiB
+  # extraEnv:
+  #   # Keep a little bit lower than memory limits
+  #   - name: GOMEMLIMIT
+  #     value: 3750MiB
 # resultsCache:
 #   enabled: true
 #   addresses: dnssrvnoa+_memcached-client._tcp.{{ include "loki.resourceName" (dict "ctx" $ "component" "results-cache") }}.{{ include "loki.namespace" $ }}.svc.{{ .Values.global.clusterDomain }}
