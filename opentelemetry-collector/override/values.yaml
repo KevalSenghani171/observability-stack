@@ -5,6 +5,8 @@ image:
   tag: "0.158.1"
 
 
+mode: "deployment"
+
 
 config:
   exporters:
