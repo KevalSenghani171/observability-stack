@@ -1,5 +1,37 @@
 ---
 loki:
+  extraEnv:
+    - name: AWS_ACCESS_KEY_ID
+      valueFrom:
+        secretKeyRef:
+          name: s3-secret
+          key: AWS_ACCESS_KEY_ID
+
+    - name: AWS_SECRET_ACCESS_KEY
+      valueFrom:
+        secretKeyRef:
+          name: s3-secret
+          key: AWS_SECRET_ACCESS_KEY
+  storage:
+    # Loki requires a bucket for chunks and the ruler. GEL requires a third bucket for the admin API.
+    # Please provide these values if you are using object storage.
+    bucketNames:
+      chunks: FIXME
+      ruler: FIXME
+      admin: FIXME
+    type: s3
+    s3: 
+      endpoint: "https://s3.ap-south-1.amazonaws.com"
+      region: ap-south-1
+      secret_access_key: ${AWS_SECRET_ACCESS_KEY}
+      access_key_id: ${AWS_ACCESS_KEY_ID}
+      signatureVersion: v4
+      s3ForcePathStyle: true
+      insecure: false
+      http_config: {}
+      # -- Check https://grafana.com/docs/loki/latest/configure/#s3_storage_config for more info on how to provide a backoff_config
+      backoff_config: {}
+      disable_dualstack: false
   commonConfig:
     replication_factor: 1
   schemaConfig:
