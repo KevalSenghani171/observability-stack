@@ -13,43 +13,48 @@ loki:
           name: s3-secret
           key: AWS_SECRET_ACCESS_KEY
   storage:
-    # Loki requires a bucket for chunks and the ruler. GEL requires a third bucket for the admin API.
-    # Please provide these values if you are using object storage.
-    bucketNames:
-      chunks: FIXME
-      ruler: FIXME
-      admin: FIXME
     type: s3
-    s3: 
+    s3:
+      s3: "s3://loki-demo-observability"
       endpoint: "https://s3.ap-south-1.amazonaws.com"
       region: ap-south-1
       secret_access_key: ${AWS_SECRET_ACCESS_KEY}
       access_key_id: ${AWS_ACCESS_KEY_ID}
-      signatureVersion: v4
-      s3ForcePathStyle: true
+      signatureVersion: null
+      s3ForcePathStyle: false
       insecure: false
       http_config: {}
       # -- Check https://grafana.com/docs/loki/latest/configure/#s3_storage_config for more info on how to provide a backoff_config
       backoff_config: {}
       disable_dualstack: false
-  commonConfig:
-    replication_factor: 1
-  schemaConfig:
-    configs:
-      - from: 2024-04-01
-        store: tsdb
-        object_store: s3
-        schema: v13
-        index:
-          prefix: loki_index_
-          period: 24h
-  ingester:
-    chunk_encoding: snappy
-  tracing:
-    enabled: true
-  querier:
-    # Default is 4, if you have enough memory and CPU you can increase, reduce if OOMing
-    max_concurrent: 2
+    # type: s3
+    # s3: 
+    #   endpoint: "https://s3.ap-south-1.amazonaws.com"
+    #   region: ap-south-1
+    #   secret_access_key: ${AWS_SECRET_ACCESS_KEY}
+    #   access_key_id: ${AWS_ACCESS_KEY_ID}
+    #   bucketnames: 
+    #   signatureVersion: v4
+    #   s3ForcePathStyle: true
+
+  # commonConfig:
+  #   replication_factor: 1
+  # schemaConfig:
+  #   configs:
+  #     - from: 2024-04-01
+  #       store: tsdb
+  #       object_store: s3
+  #       schema: v13
+  #       index:
+  #         prefix: loki_index_
+  #         period: 24h
+  # ingester:
+  #   chunk_encoding: snappy
+  # tracing:
+  #   enabled: true
+  # querier:
+  #   # Default is 4, if you have enough memory and CPU you can increase, reduce if OOMing
+  #   max_concurrent: 2
 
 #gateway:
 #  ingress:
@@ -84,22 +89,22 @@ singleBinary:
     # Keep a little bit lower than memory limits
     - name: GOMEMLIMIT
       value: 3750MiB
-resultsCache:
-  enabled: true
-  addresses: dnssrvnoa+_memcached-client._tcp.{{ include "loki.resourceName" (dict "ctx" $ "component" "results-cache") }}.{{ include "loki.namespace" $ }}.svc.{{ .Values.global.clusterDomain }}
-  defaultValidity: 12h
-  timeout: 500ms
-  replicas: 1
-  port: 11211
-  allocatedMemory: 256
-  maxItemMemory: 5
-  connectionLimit: 16384
-  writebackSizeLimit: 126MB
-  writebackBuffer: 500000
-chunksCache:
-  # default is 500MB, with limited memory keep this smaller
-  writebackSizeLimit: 10MB
-  allocatedMemory: 256
+# resultsCache:
+#   enabled: true
+#   addresses: dnssrvnoa+_memcached-client._tcp.{{ include "loki.resourceName" (dict "ctx" $ "component" "results-cache") }}.{{ include "loki.namespace" $ }}.svc.{{ .Values.global.clusterDomain }}
+#   defaultValidity: 12h
+#   timeout: 500ms
+#   replicas: 1
+#   port: 11211
+#   allocatedMemory: 256
+#   maxItemMemory: 5
+#   connectionLimit: 16384
+#   writebackSizeLimit: 126MB
+#   writebackBuffer: 500000
+# chunksCache:
+#   # default is 500MB, with limited memory keep this smaller
+#   writebackSizeLimit: 10MB
+#   allocatedMemory: 256
 
 # Enable minio for storage
 minio:
