@@ -26,7 +26,7 @@ annotations: {}
 tempo:
   registry: docker.io
   repository: grafana/tempo
-  tag: latest
+  tag: ""
   pullPolicy: IfNotPresent
   ## Optionally specify an array of imagePullSecrets.
   ## Secrets must be manually created in the namespace.
@@ -44,7 +44,8 @@ tempo:
   #    cpu: 2000m
   #    memory: 6Gi
 
-  # memBallastSizeMbs: 1024
+  streamOverHttpEnabled: false
+  memBallastSizeMbs: 1024
   multitenancyEnabled: false
   # -- If true, Tempo will report anonymous usage data about the shape of a deployment to Grafana Labs
   reportingEnabled: true
@@ -100,16 +101,16 @@ tempo:
   #    concurrent_jobs: 2000
   retention: 24h
   # -- The standard overrides configuration section. This can include a `defaults` object for applying to all tenants (not to be confused with the `global` property of the same name, which overrides `max_byte_per_trace` for all tenants). For an example on how to enable the metrics generator using the `overrides` object, see the 'Activate metrics generator' section below. Refer to [Standard overrides](https://grafana.com/docs/tempo/latest/configuration/#standard-overrides) for more details.
-  overrides: {}
+  overrides:
     # -- Default config values for all tenants, can be overridden by per-tenant overrides. If a tenant's specific overrides are not found in the `per_tenant_overrides` block, the values in this `default` block will be used. Configs inside this block should follow the new overrides indentation format
-    # defaults: {}
+    defaults: {}
     #  metrics_generator:
     #    processors:
     #      - service-graphs
     #      - span-metrics
 
     # -- Path to the per tenant override config file. The values of the `per_tenant_overrides` config below will be written to the default path `/conf/overrides.yaml`. Users can set tenant-specific overrides settings in a separate file and point per_tenant_override_config to it if not using the per_tenant_overrides block below.
-    # per_tenant_override_config: /conf/overrides.yaml
+    per_tenant_override_config: /conf/overrides.yaml
   # -- The `per tenant` aka `tenant-specific` runtime overrides. This allows overriding values set in the configuration on a per-tenant basis. Note that *all* values must be given for each per-tenant configuration block. Refer to [Runtime overrides](https://grafana.com/docs/tempo/latest/configuration/#runtime-overrides) and [Tenant-Specific overrides](https://grafana.com/docs/tempo/latest/configuration/#tenant-specific-overrides) documentation for more details.
   per_tenant_overrides: {}
     # 'tenant-id':
@@ -143,20 +144,23 @@ tempo:
     failureThreshold: 3
     successThreshold: 1
   storage:
-    trace: 
-      backend: s3
-      s3:
-        endpoint: "https://s3.ap-south-1.amazonaws.com"
-        region: ap-south-1
-        bucket: observability-tempo-keval-demo
-        access_key: ${AWS_ACCESS_KEY_ID}                           # optional. secret key when using static credentials.
-        secret_key: ${AWS_SECRET_ACCESS_KEY}                           # optional. secret key when using static credentials.
-        forcepathstyle: true                           # optional. secret key when using static credentials.                              # optional. enable if endpoint is http
-      # backend: local
-      # local:
-      #   path: /var/tempo/traces
-      # wal:
-      #   path: /var/tempo/wal
+    trace:
+      # tempo storage backend.
+      # Refers to: https://grafana.com/docs/tempo/latest/configuration/#storage
+      ## Use s3 for example
+      # backend: s3
+      # store traces in s3
+      # s3:
+      #   bucket: <your s3 bucket>                        # store traces in this bucket
+      #   endpoint: s3.dualstack.us-east-2.amazonaws.com  # api endpoint
+      #   access_key: ...                                 # optional. access key when using static credentials.
+      #   secret_key: ...                                 # optional. secret key when using static credentials.
+      #   insecure: false                                 # optional. enable if endpoint is http
+      backend: local
+      local:
+        path: /var/tempo/traces
+      wal:
+        path: /var/tempo/wal
   # this configuration will listen on all ports and protocols that tempo is capable of.
   # the receives all come from the OpenTelemetry collector.  more configuration information can
   # be found there: https://github.com/open-telemetry/opentelemetry-collector/tree/master/receiver
@@ -187,17 +191,7 @@ tempo:
   ## Additional container arguments
   extraArgs: {}
   # -- Environment variables to add
-  extraEnv:
-    - name: AWS_ACCESS_KEY_ID
-      valueFrom:
-        secretKeyRef:
-          name: s3-secret
-          key: AWS_ACCESS_KEY_ID
-    - name: AWS_SECRET_ACCESS_KEY
-      valueFrom:
-        secretKeyRef:
-          name: s3-secret
-          key: AWS_SECRET_ACCESS_KEY
+  extraEnv: []
   # -- Environment variables from secrets or configmaps to add to the ingester pods
   extraEnvFrom: []
   # -- Volume mounts to add
@@ -209,52 +203,53 @@ tempo:
 
 # -- Tempo configuration file contents
 # @default -- Dynamically generated tempo configmap
-config: ""
-    # memberlist:
-    #   cluster_label: "{{ .Release.Name }}.{{ .Release.Namespace }}"
-    # multitenancy_enabled: {{ .Values.tempo.multitenancyEnabled }}
-    # usage_report:
-    #   reporting_enabled: {{ .Values.tempo.reportingEnabled }}
-    # compactor:
-    #   compaction:
-    #     block_retention: {{ .Values.tempo.retention }}
-    # distributor:
-    #   receivers:
-    #     {{- toYaml .Values.tempo.receivers | nindent 8 }}
-    # ingester:
-    #   {{- toYaml .Values.tempo.ingester | nindent 6 }}
-    # server:
-    #   {{- toYaml .Values.tempo.server | nindent 6 }}
-    # storage:
-    #   {{- toYaml .Values.tempo.storage | nindent 6 }}
-    # querier:
-    #   {{- toYaml .Values.tempo.querier | nindent 6 }}
-    # query_frontend:
-    #   {{- toYaml .Values.tempo.queryFrontend | nindent 6 }}
-    # overrides:
-    #   {{- toYaml .Values.tempo.overrides | nindent 6 }}
-    #   {{- if .Values.tempo.metricsGenerator.enabled }}
-    # metrics_generator:
-    #   {{- if .Values.tempo.metricsGenerator.processor }}
-    #   processor:
-    #     {{- toYaml .Values.tempo.metricsGenerator.processor | nindent 8 }}
-    #   {{- end }}
-    #   {{- if .Values.tempo.metricsGenerator.registry }}
-    #   registry:
-    #     {{- toYaml .Values.tempo.metricsGenerator.registry | nindent 8 }}
-    #   {{- end }}
-    #   storage:
-    #     path: {{ .Values.tempo.metricsGenerator.storage.path | quote }}
-    #     {{- if .Values.tempo.metricsGenerator.storage.remote_write }}
-    #     remote_write:
-    #       {{- toYaml .Values.tempo.metricsGenerator.storage.remote_write | nindent 10 }}
-    #     {{- else }}
-    #     remote_write:
-    #       - url: {{ .Values.tempo.metricsGenerator.remoteWriteUrl }}
-    #     {{- end }}
-    #   traces_storage:
-    #     path: {{ .Values.tempo.metricsGenerator.traces_storage.path | quote }}
-    #   {{- end }}
+config: |
+    stream_over_http_enabled: {{ .Values.tempo.streamOverHttpEnabled }}
+    memberlist:
+      cluster_label: "{{ .Release.Name }}.{{ .Release.Namespace }}"
+    multitenancy_enabled: {{ .Values.tempo.multitenancyEnabled }}
+    usage_report:
+      reporting_enabled: {{ .Values.tempo.reportingEnabled }}
+    compactor:
+      compaction:
+        block_retention: {{ .Values.tempo.retention }}
+    distributor:
+      receivers:
+        {{- toYaml .Values.tempo.receivers | nindent 8 }}
+    ingester:
+      {{- toYaml .Values.tempo.ingester | nindent 6 }}
+    server:
+      {{- toYaml .Values.tempo.server | nindent 6 }}
+    storage:
+      {{- toYaml .Values.tempo.storage | nindent 6 }}
+    querier:
+      {{- toYaml .Values.tempo.querier | nindent 6 }}
+    query_frontend:
+      {{- toYaml .Values.tempo.queryFrontend | nindent 6 }}
+    overrides:
+      {{- toYaml .Values.tempo.overrides | nindent 6 }}
+      {{- if .Values.tempo.metricsGenerator.enabled }}
+    metrics_generator:
+      {{- if .Values.tempo.metricsGenerator.processor }}
+      processor:
+        {{- toYaml .Values.tempo.metricsGenerator.processor | nindent 8 }}
+      {{- end }}
+      {{- if .Values.tempo.metricsGenerator.registry }}
+      registry:
+        {{- toYaml .Values.tempo.metricsGenerator.registry | nindent 8 }}
+      {{- end }}
+      storage:
+        path: {{ .Values.tempo.metricsGenerator.storage.path | quote }}
+        {{- if .Values.tempo.metricsGenerator.storage.remote_write }}
+        remote_write:
+          {{- toYaml .Values.tempo.metricsGenerator.storage.remote_write | nindent 10 }}
+        {{- else }}
+        remote_write:
+          - url: {{ .Values.tempo.metricsGenerator.remoteWriteUrl }}
+        {{- end }}
+      traces_storage:
+        path: {{ .Values.tempo.metricsGenerator.traces_storage.path | quote }}
+      {{- end }}
 
 tempoQuery:
   repository: grafana/tempo-query
@@ -378,13 +373,12 @@ serviceMonitor:
 
 persistence:
   enabled: false
-  storageClass: ebs-sc
     # -- Enable StatefulSetAutoDeletePVC feature
   enableStatefulSetAutoDeletePVC: false
   # storageClassName: local-path
   accessModes:
     - ReadWriteOnce
-  size: 5Gi
+  size: 10Gi
 
 # -- Pod Annotations
 podAnnotations: {}
@@ -394,6 +388,12 @@ podLabels: {}
 
 # Apply extra labels to common labels.
 extraLabels: {}
+
+# -- Add initContainers to the Tempo StatefulSet
+initContainers: []
+
+# -- Add extra containers to the Tempo StatefulSet
+extraContainers: []
 
 # -- Volumes to add
 extraVolumes: []
