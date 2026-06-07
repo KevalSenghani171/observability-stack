@@ -14,6 +14,10 @@ loki:
           key: AWS_SECRET_ACCESS_KEY
   storage:
     type: s3
+    bucketNames:
+      chunks: loki-chunks
+      ruler: loki-ruler
+      admin: loki-admin
     s3:
       s3: "s3://loki-demo-observability"
       endpoint: "https://s3.ap-south-1.amazonaws.com"
