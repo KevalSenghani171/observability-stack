@@ -154,3 +154,11 @@ bloomCompactor:
   replicas: 0
 bloomGateway:
   replicas: 0
+
+
+ruler:
+  enabled: false
+
+sidecar:
+  rules:
+    enabled: false
