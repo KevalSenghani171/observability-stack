@@ -47,7 +47,7 @@ loki:
 
   commonConfig:
     replication_factor: 1
-  memberlist: {}
+  # memberlist: {}
   # schemaConfig:
   #   configs:
   #     - from: 2024-04-01
@@ -66,13 +66,13 @@ loki:
         index:
           prefix: loki_index_
           period: 24h
-  # ingester:
-  #   chunk_encoding: snappy
-  # tracing:
-  #   enabled: true
-  # querier:
-  #   # Default is 4, if you have enough memory and CPU you can increase, reduce if OOMing
-  #   max_concurrent: 2
+  ingester:
+    chunk_encoding: snappy
+  tracing:
+    enabled: true
+  querier:
+    # Default is 4, if you have enough memory and CPU you can increase, reduce if OOMing
+    max_concurrent: 2
 
 #gateway:
 #  ingress:
