@@ -1,12 +1,50 @@
 image:
-  # If you want to use the core image `otel/opentelemetry-collector`, you also need to change `command.name` value to `otelcol`.
-  repository: "ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-k8s"
-  pullPolicy: IfNotPresent
+  repository: otel/opentelemetry-collector-contrib
   tag: "0.153.0"
+  pullPolicy: IfNotPresent
 
+mode: deployment
 
-mode: "deployment"
+config:
+  receivers:
+    otlp:
+      protocols:
+        grpc:
+          endpoint: 0.0.0.0:4317
+        http:
+          endpoint: 0.0.0.0:4318
 
+  processors:
+    batch: {}
+
+  exporters:
+    otlp/tempo:
+      endpoint: tempo.devops-tools.svc.cluster.local:4317
+      tls:
+        insecure: true
+
+    otlphttp/loki:
+      endpoint: http://loki.devops-tools.svc.cluster.local:3100/otlp
+
+    prometheus:
+      endpoint: "0.0.0.0:8889"
+
+  service:
+    pipelines:
+      traces:
+        receivers: [otlp]
+        processors: [batch]
+        exporters: [debug, otlp/tempo]
+
+      logs:
+        receivers: [otlp]
+        processors: [batch]
+        exporters: [debug, otlphttp/loki]
+
+      metrics:
+        receivers: [otlp]
+        processors: [batch]
+        exporters: [prometheus]
 
 # config:
 #   exporters:
@@ -24,32 +62,3 @@ mode: "deployment"
 
 
 
-config:
-  exporters:
-    otlp/tempo:
-      endpoint: tempo-distributor.observability.svc.cluster.local:4317
-      tls:
-        insecure: true
-
-    loki:
-      endpoint: http://loki.devops-tools.svc.cluster.local/loki/api/v1/push
-
-    prometheus:
-      endpoint: "0.0.0.0:8889"
-
-  service:
-    pipelines:
-      traces:
-        exporters:
-          - debug
-          - otlp/tempo
-
-      logs:
-        exporters:
-          - debug
-          - loki
-
-      metrics:
-        exporters:
-          - debug
-          - prometheus
