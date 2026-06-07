@@ -1,0 +1,13 @@
+config:
+  exporters:
+    otlp/tempo:
+      endpoint: tempo.devops-tools.svc.cluster.local:4317
+      tls:
+        insecure: true
+
+  service:
+    pipelines:
+      traces:
+        exporters:
+          - debug
+          - otlp/tempo
