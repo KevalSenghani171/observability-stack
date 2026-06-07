@@ -40,8 +40,8 @@ loki:
     #   signatureVersion: v4
     #   s3ForcePathStyle: true
 
-  # commonConfig:
-  #   replication_factor: 1
+  commonConfig:
+    replication_factor: 1
   # schemaConfig:
   #   configs:
   #     - from: 2024-04-01
@@ -77,7 +77,9 @@ loki:
 #          - path: /
 #            pathType: Prefix
 
+
 deploymentMode: SingleBinary
+
 singleBinary:
   persistence:
       whenScaled: Delete
