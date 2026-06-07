@@ -53,7 +53,7 @@ loki:
   #         period: 24h
   schemaConfig:
     configs:
-      - from: "2024-01-01"
+      - from: "2024-04-01"
         store: tsdb
         object_store: s3
         schema: v13
@@ -78,7 +78,7 @@ loki:
 #            pathType: Prefix
 
 
-deploymentMode: SingleBinary
+deploymentMode: Monolithic
 
 singleBinary:
   persistence:
@@ -94,15 +94,15 @@ singleBinary:
   replicas: 1
   resources:
     limits:
-      cpu: 500m
+      cpu: 1
       memory: 256Mi
     requests:
-      cpu: 100m
-      memory: 12Mi
-  # extraEnv:
-  #   # Keep a little bit lower than memory limits
-  #   - name: GOMEMLIMIT
-  #     value: 3750MiB
+      cpu: 500m
+      memory: 256Mi
+  extraEnv:
+    # Keep a little bit lower than memory limits
+    - name: GOMEMLIMIT
+      value: 128MiB
 # resultsCache:
 #   enabled: true
 #   addresses: dnssrvnoa+_memcached-client._tcp.{{ include "loki.resourceName" (dict "ctx" $ "component" "results-cache") }}.{{ include "loki.namespace" $ }}.svc.{{ .Values.global.clusterDomain }}
@@ -123,38 +123,28 @@ chunksCache:
 # Enable minio for storage
 minio:
   enabled: false
-
 backend:
   replicas: 0
-
 read:
   replicas: 0
-
 write:
   replicas: 0
-# # Zero out replica counts of other deployment modes
-# backend:
-#   replicas: 0
-# read:
-#   replicas: 0
-# write:
-#   replicas: 0
 
-# ingester:
-#   replicas: 0
-# querier:
-#   replicas: 0
-# queryFrontend:
-#   replicas: 0
-# queryScheduler:
-#   replicas: 0
-# distributor:
-#   replicas: 0
-# compactor:
-#   replicas: 0
-# indexGateway:
-#   replicas: 0
-# bloomCompactor:
-#   replicas: 0
-# bloomGateway:
-#   replicas: 0
+ingester:
+  replicas: 0
+querier:
+  replicas: 0
+queryFrontend:
+  replicas: 0
+queryScheduler:
+  replicas: 0
+distributor:
+  replicas: 0
+compactor:
+  replicas: 0
+indexGateway:
+  replicas: 0
+bloomCompactor:
+  replicas: 0
+bloomGateway:
+  replicas: 0
