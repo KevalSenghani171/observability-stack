@@ -22,7 +22,7 @@ spec:
             - name: OTEL_SERVICE_NAME
               value: "qlik-java-app"
             - name: OTEL_EXPORTER_OTLP_ENDPOINT
-              value: "http://tempo.devops-tools.svc.cluster.local:4317"
+              value: "http://otel-collector-opentelemetry-collector.observability.svc.cluster.local:4317"
             - name: OTEL_EXPORTER_OTLP_PROTOCOL
               value: "grpc"
             - name: OTEL_TRACES_EXPORTER
@@ -30,15 +30,25 @@ spec:
             - name: OTEL_METRICS_EXPORTER
               value: "none"
             - name: OTEL_LOGS_EXPORTER
-              value: "none"
+              value: "otlp"
             - name: OTEL_INSTRUMENTATION_LOGGING_ENABLED
+              value: "true"
+            - name: OTEL_INSTRUMENTATION_LOGBACK_APPENDER_ENABLED
+              value: "true"
+            - name: OTEL_INSTRUMENTATION_LOGGING_MDC_ENABLED
               value: "true"
             - name: PYROSCOPE_APPLICATION_NAME
               value: "qlik-java-app"
             - name: PYROSCOPE_SERVER_ADDRESS
               value: "http://pyroscope.devops-tools.svc.cluster.local:4040"
+            - name: PYROSCOPE_PROFILING_ENABLED
+              value: "true"
             - name: PYROSCOPE_FORMAT
               value: "jfr"
+            - name: OTEL_PYROSCOPE_ADD_PROFILE_URL
+              value: "true"
+            - name: PYROSCOPE_PROFILER_EVENT
+              value: "itimer"
             - name: PYROSCOPE_PROFILING_INTERVAL
               value: "50ms"
             - name: PYROSCOPE_UPLOAD_INTERVAL

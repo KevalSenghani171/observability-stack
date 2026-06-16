@@ -16,7 +16,15 @@ config:
 
   processors:
     batch: {}
+    resource:
+      attributes:
+        - action: upsert
+          key: service.name
+          from_attribute: service.name
 
+        - action: upsert
+          key: k8s.namespace.name
+          from_attribute: k8s.namespace.name
   exporters:
     otlp/tempo:
       endpoint: tempo.devops-tools.svc.cluster.local:4317
@@ -33,17 +41,17 @@ config:
     pipelines:
       traces:
         receivers: [otlp]
-        processors: [batch]
-        exporters: [debug, otlp/tempo]
+        processors: [resource,batch]
+        exporters: [debug,otlp/tempo]
 
       logs:
         receivers: [otlp]
-        processors: [batch]
-        exporters: [debug, otlphttp/loki]
+        processors: [resource,batch]
+        exporters: [debug,otlphttp/loki]
 
       metrics:
         receivers: [otlp]
-        processors: [batch]
+        processors: [resource,batch]
         exporters: [prometheus]
 
 # config:
