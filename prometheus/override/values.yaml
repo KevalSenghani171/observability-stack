@@ -19,7 +19,7 @@ extraScrapeConfigs: |
       - targets: ['my-app.default.svc.cluster.local:80']
   - job_name: 'qlik-java-app'
     static_configs:
-      - targets: ['otel-collector-opentelemetry-collector.observability.svc.cluster.local:8889']
+      - targets: ['otel-collector-opentelemetry-collector.observability.svc.cluster.local:8888']
 
 # extraScrapeConfigs: |
 #   - job_name: prometheus-test2
