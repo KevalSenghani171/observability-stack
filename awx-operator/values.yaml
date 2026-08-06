@@ -12,7 +12,7 @@ AWX:
     hostname: awx.company.com
 
     postgres_storage_class: ebs-sc
-
+    postgres_configuration_secret: awx-postgres-secret
     postgres_storage_requirements:
       requests:
         storage: 10Gi
@@ -20,15 +20,16 @@ AWX:
     projects_storage_class: ebs-sc
 
     projects_storage_size: 5Gi
-  postgres:
-    enabled: true
-  #   host: Unset
+  # postgres:
+  #   enabled: false
+  #   host: awx-postgres.c7goqse0ynvz.ap-south-1.rds.amazonaws.com
   #   port: 5678
-  #   dbName: Unset
-  #   username: admin
+  #   dbName: awx
+  #   username: awx
   #   password: Unset
   #   sslmode: prefer
   #   type: unmanaged
+
 
 
 rbac:
