@@ -22,7 +22,7 @@ echo -e "\n"
 cd awx-operator 
 ls -l
 
-helm upgrade --install awx awx-operator/awx -f values.yaml  -n awx    
+helm upgrade --install awx awx-operator/awx-operator -f values.yaml  -n awx    
 
 kubectl get all -n  awx 
 
