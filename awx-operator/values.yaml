@@ -14,8 +14,10 @@ AWX:
     projects_persistence: true
     projects_storage_class: ebs-sc
     projects_storage_size: 5Gi
-  # postgres:
-  #   enabled: false
+    projects_persistence_access_mode: ReadWriteOnce
+
+postgres:
+  enabled: false
   #   host: awx-postgres.c7goqse0ynvz.ap-south-1.rds.amazonaws.com
   #   port: 5678
   #   dbName: awx
