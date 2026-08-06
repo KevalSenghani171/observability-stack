@@ -11,15 +11,15 @@ AWX:
 
     hostname: awx.company.com
 
-    postgres_storage_class: gp3
+    postgres_storage_class: ebs-sc
 
     postgres_storage_requirements:
       requests:
-        storage: 20Gi
+        storage: 10Gi
 
-    projects_storage_class: gp3
+    projects_storage_class: ebs-sc
 
-    projects_storage_size: 50Gi
+    projects_storage_size: 5Gi
 
   # configurations for external postgres instance
   postgres:
