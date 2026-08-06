@@ -3,18 +3,17 @@ AWX:
   name: awx
 
   spec:
-spec:
-  admin_user: admin
+    admin_user: admin
 
-  service_type: NodePort
+    service_type: NodePort
 
-  ingress_type: none
+    ingress_type: none
 
-  postgres_configuration_secret: awx-postgres-configuration
+    postgres_configuration_secret: awx-postgres-configuration
 
-  projects_persistence: true
-  projects_storage_class: ebs-sc
-  projects_storage_size: 5Gi
+    projects_persistence: true
+    projects_storage_class: ebs-sc
+    projects_storage_size: 5Gi
   # postgres:
   #   enabled: false
   #   host: awx-postgres.c7goqse0ynvz.ap-south-1.rds.amazonaws.com
