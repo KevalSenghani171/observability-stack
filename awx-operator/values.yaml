@@ -12,7 +12,7 @@ AWX:
     postgres_configuration_secret: awx-postgres-configuration
 
     projects_persistence: true
-    projects_storage_class: gp3
+    projects_storage_class: efs-sc
     projects_storage_size: 5Gi
 
 postgres:
