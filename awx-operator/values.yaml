@@ -2,37 +2,28 @@ AWX:
   # enable use of awx-deploy template
   enabled: true
   name: awx
-
   spec:
     admin_user: admin
-    service_type: LoadBalancer
-
+    service_type: NodePort
     ingress_type: ingress
-
     hostname: awx.company.com
-
     postgres_storage_class: ebs-sc
-
     postgres_storage_requirements:
       requests:
         storage: 10Gi
-
     projects_storage_class: ebs-sc
-
     projects_storage_size: 5Gi
+  # postgres:
+  #   enabled: false
+  #   host: Unset
+  #   port: 5678
+  #   dbName: Unset
+  #   username: admin
+  #   password: Unset
+  #   sslmode: prefer
+  #   type: unmanaged
 
-  # configurations for external postgres instance
-  postgres:
-    enabled: false
-    host: Unset
-    port: 5678
-    dbName: Unset
-    username: admin
-    # for secret management, pass in the password independently of this file
-    # at the command line, use --set AWX.postgres.password
-    password: Unset
-    sslmode: prefer
-    type: unmanaged
+
 
 rbac:
   create: true
