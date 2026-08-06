@@ -7,9 +7,7 @@ AWX:
 
     service_type: NodePort
 
-    ingress_type: ingress
-
-    hostname: awx.company.com
+    ingress_type: none
 
     postgres_storage_class: ebs-sc
     postgres_configuration_secret: awx-postgres-configuration
