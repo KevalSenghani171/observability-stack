@@ -12,7 +12,7 @@ AWX:
     hostname: awx.company.com
 
     postgres_storage_class: ebs-sc
-    postgres_configuration_secret: awx-postgres-secret
+    postgres_configuration_secret: awx-postgres-configuration
     postgres_storage_requirements:
       requests:
         storage: 10Gi
