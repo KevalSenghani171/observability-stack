@@ -1,0 +1,37 @@
+format_version: 10
+pipelines:
+  awx-deploy:
+    group: Observability_Stack
+    label_template: ${COUNT}
+    lock_behavior: none
+    display_order: -1
+
+    materials:
+      git-670ccc0:
+        git: https://github.com/KevalSenghani171/observability-stack.git
+        branch: main
+        shallow_clone: false
+        auto_update: true
+
+    stages:
+      - Code_Deploy:
+          fetch_materials: true
+          keep_artifacts: false
+          clean_workspace: false
+
+          approval:
+            type: manual
+            allow_only_on_success: false
+
+          jobs:
+            awx_deploy:
+              timeout: 0
+              elastic_profile_id: demo-app
+              tasks:
+                - exec:
+                    command: /bin/bash
+                    arguments:
+                      - -c
+                      - |
+                        bash Scripts/awx_deploy.sh
+                    run_if: passed

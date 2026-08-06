@@ -1,9 +1,25 @@
 AWX:
   # enable use of awx-deploy template
-  enabled: false
+  enabled: true
   name: awx
+
   spec:
     admin_user: admin
+    service_type: LoadBalancer
+
+    ingress_type: ingress
+
+    hostname: awx.company.com
+
+    postgres_storage_class: gp3
+
+    postgres_storage_requirements:
+      requests:
+        storage: 20Gi
+
+    projects_storage_class: gp3
+
+    projects_storage_size: 50Gi
 
   # configurations for external postgres instance
   postgres:
