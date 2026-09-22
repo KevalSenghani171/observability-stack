@@ -58,7 +58,7 @@ resource "aws_security_group" "kubernetes_sg" {
 
 # Existing Instance Profile
 data "aws_iam_instance_profile" "existing" {
-  name = "devops-aws"
+  name = "observability"
 }
 
 
