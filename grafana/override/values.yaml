@@ -1,4 +1,23 @@
 
+vault:
+  enabled: true
+
+  annotations:
+    vault.hashicorp.com/agent-inject: "true"
+    vault.hashicorp.com/agent-inject-status: "update"
+    vault.hashicorp.com/agent-inject-secret-clisecret: "secret/clisecret"
+    vault.hashicorp.com/agent-inject-template-clisecret: |
+      {{- with secret "secret/clisecret" -}}
+      pattoken={{ .Data.data.token }}
+      {{- end }}
+    vault.hashicorp.com/agent-inject-secret-uisecret: "secret/mysql-secret"
+    vault.hashicorp.com/agent-inject-template-uisecret: |
+      {{- with secret "secret/mysql-secret" -}}
+      username={{ .Data.data.username }}
+      password={{ .Data.data.password }}
+      {{- end }}
+    vault.hashicorp.com/role: "vault-role"
+
 image:
   registry: docker.io
   repository: grafana/grafana

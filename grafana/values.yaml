@@ -16,6 +16,9 @@ global:
   #   - pullSecret2
   imagePullSecrets: []
 
+vault:
+  enabled: false
+  annotations: ""
 rbac:
   create: true
   ## Use an existing ClusterRole/Role (depending on rbac.namespaced false/true)
