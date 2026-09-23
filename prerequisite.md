@@ -25,6 +25,9 @@ chmod +x ./install_kubectl.sh && ./install_kubectl.sh
 
 # Terraform
 chmod +x ./install_terraform.sh && ./install_terraform.sh
+
+# Helm
+chmod +x ./get_helm.sh && ./get_helm.sh
 ```
 
 ---
@@ -77,6 +80,15 @@ sudo chown ubuntu:ubuntu /home/ubuntu/kubeconfig
 ```
 
 ---
+
+### 8. copy .pem file from local to controller instance where you will play around kubernetes commands
+
+```
+Navigate to the location where .pem file is kept
+
+scp -i "observability.pem" "observability.pem" ubuntu@PUBLIC_IP/home/ubuntu/
+
+```
 
 ### 🌐 7. Access Cluster from Local / Another EC2
 
