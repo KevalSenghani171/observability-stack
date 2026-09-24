@@ -75,8 +75,6 @@ extraInitContainers:
       - sh
       - -c
       - |
-        source /vault/secrets/mysql-secret
-        exec /run.sh
         mkdir -p /var/lib/grafana/dashboards/OBS
     volumeMounts:
       - name: grafana-provisioning
