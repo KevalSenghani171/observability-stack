@@ -82,8 +82,8 @@ extraVolumeMounts:
   - name: grafana-provisioning
     mountPath: /etc/grafana/provisioning
 
-envFromSecrets:
-  - name: grafana-mysql
+# envFromSecrets:
+#   - name: grafana-mysql
 
 datasources:
  datasources.yaml:
