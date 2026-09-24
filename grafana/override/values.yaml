@@ -2,7 +2,7 @@ command:
   - sh
   - -c
   - |
-    . /vault/secrets/mysql-secret
+    . /vault/secret/mysql-secret
     exec /run.sh
 
 serviceAccount:
