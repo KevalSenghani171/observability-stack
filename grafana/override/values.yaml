@@ -17,9 +17,9 @@ vault:
     vault.hashicorp.com/agent-inject-secret-mysql-secret: "secret/mysql-secret"
     vault.hashicorp.com/agent-inject-template-mysql-secret: |
       {{- with secret "secret/mysql-secret" -}}
-      db_host={{ .Data.data.host }}
-      db_username={{ .Data.data.username }}
-      db_password={{ .Data.data.password }}
+      export GF_DATABASE_HOST={{ .Data.data.host }}
+      export GF_DATABASE_USERNAME={{ .Data.data.username }}
+      export GF_DATABASE_PASSWORD={{ .Data.data.password }}
       {{- end }}
     vault.hashicorp.com/role: "vault-role"
 
