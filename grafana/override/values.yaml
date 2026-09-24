@@ -31,7 +31,7 @@ vault:
       export GF_DATABASE_USERNAME={{ .Data.data.username }}
       export GF_DATABASE_PASSWORD={{ .Data.data.password }}
       {{- end }}
-    vault.hashicorp.com/role: "vault-role"
+    vault.hashicorp.com/role: "grafana"
 
 image:
   registry: docker.io
