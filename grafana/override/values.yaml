@@ -1,17 +1,21 @@
 
+serviceAccount:
+  create: false
+  name: vault-serviceaccount
+
 vault:
   enabled: true
 
   annotations:
     vault.hashicorp.com/agent-inject: "true"
     vault.hashicorp.com/agent-inject-status: "update"
-    vault.hashicorp.com/agent-inject-secret-clisecret: "secret/clisecret"
-    vault.hashicorp.com/agent-inject-template-clisecret: |
-      {{- with secret "secret/clisecret" -}}
-      pattoken={{ .Data.data.token }}
-      {{- end }}
-    vault.hashicorp.com/agent-inject-secret-uisecret: "secret/mysql-secret"
-    vault.hashicorp.com/agent-inject-template-uisecret: |
+    # vault.hashicorp.com/agent-inject-secret-clisecret: "secret/clisecret"
+    # vault.hashicorp.com/agent-inject-template-clisecret: |
+    #   {{- with secret "secret/clisecret" -}}
+    #   pattoken={{ .Data.data.token }}
+    #   {{- end }}
+    vault.hashicorp.com/agent-inject-secret-mysql-secret: "secret/mysql-secret"
+    vault.hashicorp.com/agent-inject-template-mysql-secret: |
       {{- with secret "secret/mysql-secret" -}}
       db_host={{ .Data.data.host }}
       db_username={{ .Data.data.username }}
@@ -133,10 +137,10 @@ dashboardProviders:
 grafana.ini:
   database:
     type: mysql
-    host: ${MYSQL_HOST}
+    host: {{ vault "secret/mysql-secret" "db_host" }}
     name: grafana
-    user: ${MYSQL_USER}
-    password: ${MYSQL_PASSWORD}
+    user: {{ vault "secret/mysql-secret" "db_username" }}
+    password: {{ vault "secret/mysql-secret" "db_password" }}
     ssl_mode: disable
   paths:
     data: /var/lib/grafana/
