@@ -125,3 +125,10 @@ kubectl create secret generic grafana-mysql \
   --from-literal=MYSQL_USER={user} \
   --from-literal=MYSQL_PASSWORD='{Password}' \
   --from-literal=MYSQL_HOST={Host}:3306 -n devops-tools
+
+### INFO: Creating Mysql user for grafana
+
+CREATE DATABASE grafana;
+CREATE USER 'username'@'%' IDENTIFIED BY 'password';
+GRANT ALL PRIVILEGES ON grafana.* TO 'username'@'%';
+FLUSH PRIVILEGES;
