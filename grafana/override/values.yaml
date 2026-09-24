@@ -5,7 +5,7 @@ command:
   - sh
   - -c
   - |
-    . /vault/secrets/mysql-secret
+    . /vault/secrets/clisecret
     exec /run.sh
 
 serviceAccount:
@@ -19,9 +19,9 @@ vault:
     vault.hashicorp.com/agent-inject: "true"
     vault.hashicorp.com/agent-inject-status: "update"
     vault.hashicorp.com/agent-inject-containers: "grafana"
-    vault.hashicorp.com/agent-inject-secret-clisecret: "secret/clisecret"
+    vault.hashicorp.com/agent-inject-secret-clisecret: "secret/data/clisecret"
     vault.hashicorp.com/agent-inject-template-clisecret: |
-      {{- with secret "secret/clisecret" -}}
+      {{- with secret "secret/data/clisecret" -}}
       export GF_DATABASE_HOST={{ .Data.data.host }}
       export GF_DATABASE_USERNAME={{ .Data.data.username }}
       export GF_DATABASE_PASSWORD={{ .Data.data.password }}
