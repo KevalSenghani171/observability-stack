@@ -26,7 +26,6 @@ vault:
       {{- with secret "secret/data/mysql-secret" }}
       export GF_DATABASE_TYPE="mysql"
       export GF_DATABASE_HOST="{{ .Data.data.host }}"
-      export GF_DATABASE_NAME="{{ .Data.data.database }}"
       export GF_DATABASE_USER="{{ .Data.data.username }}"
       export GF_DATABASE_PASSWORD="{{ .Data.data.password }}"
       {{- end }}
