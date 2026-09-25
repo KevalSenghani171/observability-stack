@@ -145,7 +145,7 @@ grafana.ini:
   database:
     type: mysql
     host: $__env{GF_DATABASE_HOST}
-    name: grafana
+    name: grafana_new
     user: $__env{GF_DATABASE_USERNAME}
     password: $__env{GF_DATABASE_PASSWORD}
     ssl_mode: disable
