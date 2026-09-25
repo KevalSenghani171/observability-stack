@@ -5,7 +5,7 @@ command:
   - sh
   - -c
   - |
-    . /vault/secrets/clisecret
+    . /vault/secrets/mysql-secret
     exec /run.sh
 
 serviceAccount:
@@ -17,16 +17,19 @@ vault:
 
   annotations:
     vault.hashicorp.com/agent-inject: "true"
-    vault.hashicorp.com/agent-inject-status: "update"
-    vault.hashicorp.com/agent-inject-containers: "grafana"
-    vault.hashicorp.com/agent-inject-secret-clisecret: "secret/data/clisecret"
-    vault.hashicorp.com/agent-inject-template-clisecret: |
-      {{- with secret "secret/data/clisecret" -}}
-      export GF_DATABASE_HOST={{ .Data.data.host }}
-      export GF_DATABASE_USERNAME={{ .Data.data.username }}
-      export GF_DATABASE_PASSWORD={{ .Data.data.password }}
-      {{- end }}
     vault.hashicorp.com/role: "vault-role"
+    vault.hashicorp.com/service: "http://vault.devops-tools.svc:8200"
+
+    vault.hashicorp.com/agent-inject-secret-mysql-secret: "secret/data/mysql-secret"
+
+    vault.hashicorp.com/agent-inject-template-mysql-secret: |
+      {{- with secret "secret/data/mysql-secret" }}
+      export GF_DATABASE_TYPE="mysql"
+      export GF_DATABASE_HOST="{{ .Data.data.host }}:{{ .Data.data.port }}"
+      export GF_DATABASE_NAME="{{ .Data.data.database }}"
+      export GF_DATABASE_USER="{{ .Data.data.username }}"
+      export GF_DATABASE_PASSWORD="{{ .Data.data.password }}"
+      {{- end }}
 
 image:
   registry: docker.io
