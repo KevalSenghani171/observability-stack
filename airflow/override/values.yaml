@@ -4,11 +4,11 @@ redis:
     size: 1Gi
     storageClassName: ebs-sc
 
-logs:
-  persistence:
-    enabled: true
-    size: 1Gi
-    storageClassName: ebs-sc
+# logs:
+#   persistence:
+#     enabled: true
+#     size: 1Gi
+#     storageClassName: ebs-sc
 
 postgressql:
   enabled: true
