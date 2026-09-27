@@ -4322,7 +4322,7 @@ podTemplate: ~
 dags:
   # Where dags volume will be mounted. Works for both persistence and gitSync.
   # If not specified, dags mount path will be set to $AIRFLOW_HOME/dags
-  mountPath: ~
+  mountPath: /opt/airflow/dags
   persistence:
     # Annotations for dags PVC
     annotations: {}
@@ -4346,18 +4346,18 @@ dags:
     subPath: ~
 
   gitSync:
-    enabled: false
+    enabled: true
 
     # Git repo clone url
-    repo: https://github.com/apache/airflow.git
+    repo: https://github.com/KevalSenghani171/observability-stack.git
     # SSH example: git@github.com:apache/airflow.git
     # HTTPS example: https://github.com/apache/airflow.git
 
-    branch: v2-2-stable
+    branch: main
     rev: HEAD
 
     # The git revision (branch, tag, or hash) to check out, v4 only
-    ref: v2-2-stable
+    ref: main
 
     depth: 1
 
@@ -4366,7 +4366,7 @@ dags:
 
     # Subpath within the repo where dags are located.
     # Should be "" if dags are at repo root
-    subPath: "tests/dags"
+    subPath: "dags"
 
     # If your repo needs a username/password, you can load them to a k8s secret
     #
