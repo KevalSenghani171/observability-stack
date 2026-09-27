@@ -3,20 +3,24 @@ redis:
     enabled: true
     size: 1Gi
     storageClassName: ebs-sc
+    existingClaim: redis-pvc
 
 workers:
   persistence:
     enabled: true
     size: 1Gi
     storageClassName: ebs-sc
+    existingClaim: workers-pvc
   celery:
     persistence:
       enabled: true
       size: 1Gi
       storageClassName: ebs-sc
+      existingClaim: celery-pvc
 
 triggerer:
   persistence:
     enabled: true
     size: 1Gi
     storageClassName: ebs-sc
+    existingClaim: triggerer-pvc
