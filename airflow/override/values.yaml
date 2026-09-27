@@ -1,0 +1,17 @@
+redis:
+  persistence:
+    enabled: true
+    size: 1Gi
+    storageClassName: ebs-sc
+
+workers:
+  persistence:
+    enabled: true
+    size: 1Gi
+    storageClassName: ebs-sc
+
+triggerer:
+  persistence:
+    enabled: true
+    size: 1Gi
+    storageClassName: ebs-sc
