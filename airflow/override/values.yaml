@@ -20,3 +20,33 @@ triggerer:
     enabled: true
     size: 1Gi
     storageClassName: ebs-sc
+
+data:
+  metadataConnection:
+    user: $__env{AIRFLOW_DB_USER}
+    pass: $__env{AIRFLOW_DB_PASSWORD}
+    protocol: postgresql
+    host: $__env{AIRFLOW_DB_HOST}
+    port: 5432
+    db: $__env{AIRFLOW_DB_NAME}
+    sslmode: disable
+
+
+serviceAccount:
+  create: false
+  name: postgres-serviceaccount
+
+airflowPodAnnotations:
+  vault.hashicorp.com/agent-inject: "true"
+  vault.hashicorp.com/role: "postgres-role"
+  vault.hashicorp.com/service: "http://vault.devops-tools.svc:8200"
+
+  vault.hashicorp.com/agent-inject-secret-postgres-secret: "secret/data/postgres-secret"
+
+  vault.hashicorp.com/agent-inject-template-postgres-secret: |
+    {{- with secret "secret/data/postgres-secret" }}
+    export AIRFLOW_DB_HOST="{{ .Data.data.host }}"
+    export AIRFLOW_DB_USER="{{ .Data.data.username }}"
+    export AIRFLOW_DB_PASSWORD="{{ .Data.data.password }}"
+    export AIRFLOW_DB_NAME="{{ .Data.data.database }}"
+    {{- end }}
