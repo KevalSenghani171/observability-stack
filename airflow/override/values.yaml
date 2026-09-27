@@ -9,6 +9,11 @@ workers:
     enabled: true
     size: 1Gi
     storageClassName: ebs-sc
+  celery:
+    persistence:
+      enabled: true
+      size: 1Gi
+      storageClassName: ebs-sc
 
 triggerer:
   persistence:
