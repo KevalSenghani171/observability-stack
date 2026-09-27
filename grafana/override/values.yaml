@@ -60,12 +60,6 @@ resources:
     cpu: "1"
     memory: 1Gi
 
-# extraSecretMounts:
-#   - name: grafana-mysql
-#     secretName: grafana-mysql
-#     mountPath: /etc/secrets/grafana-mysql
-#     readOnly: true
-
 podSecurityContext:
   fsGroup: 472
 
@@ -89,9 +83,6 @@ extraVolumes:
 extraVolumeMounts:
   - name: grafana-provisioning
     mountPath: /etc/grafana/provisioning
-
-# envFromSecrets:
-#   - name: grafana-mysql
 
 datasources:
  datasources.yaml:
