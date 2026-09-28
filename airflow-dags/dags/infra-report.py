@@ -565,6 +565,6 @@ with DAG(
 
     report = generate_report()
 
-    send_report(report)
+    send_report()
 
 
