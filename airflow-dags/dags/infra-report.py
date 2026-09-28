@@ -25,11 +25,11 @@ SMTP_CONN_ID = "smtp_default"
 
 # Email recipients
 EMAIL_TO = [
-    "your-email@example.com"
+    "senghanikeval@gmail.com"
 ]
 
 # Report period
-REPORT_HOURS = 24
+REPORT_HOURS = 1
 
 
 # ============================================================
@@ -247,7 +247,7 @@ with DAG(
 
     start_date=datetime(2026, 9, 27),
 
-    schedule="0 8 * * *",
+    schedule="*/5 * * * *",
 
     catchup=False,
 
@@ -554,7 +554,7 @@ with DAG(
         )
 
         hook.send_email_smtp(
-            to=EMAIL_TO,
+            to="EMAIL_TO",
 
             subject=(
                 "Linux Server Utilization Report"
