@@ -565,4 +565,5 @@ with DAG(
 
         print(f"Report emailed to: {', '.join(EMAIL_TO)}")
 
-
+    # Register the TaskFlow task in this DAG.
+    generate_report()
