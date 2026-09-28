@@ -17,7 +17,7 @@ from airflow.providers.smtp.hooks.smtp import SmtpHook
 # Change this to your Prometheus service URL.
 PROMETHEUS_URL = os.getenv(
     "PROMETHEUS_URL",
-    "http://prometheus-server.monitoring.svc.cluster.local"
+    "http://prometheus-server.devops-tools.svc.cluster.local:9090"
 )
 
 # SMTP Airflow Connection ID
