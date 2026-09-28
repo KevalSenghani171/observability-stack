@@ -37,7 +37,10 @@ triggerer:
     enabled: true
     size: 1Gi
     storageClassName: ebs-sc
-
+    
+extraEnv: |
+  - name: _PIP_ADDITIONAL_REQUIREMENTS
+    value: "openpyxl==3.1.5"
 # data:
 #   metadataConnection:
 #     user: $__env{AIRFLOW_DB_USER}
