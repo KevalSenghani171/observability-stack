@@ -1,4 +1,3 @@
-```python
 from datetime import datetime, timedelta
 from pathlib import Path
 import os
@@ -603,5 +602,5 @@ with DAG(
     report = generate_report()
 
     send_report(report)
-```
+
 
