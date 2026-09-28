@@ -240,8 +240,8 @@ with DAG(
     dag_id="linux_server_utilization_report",
 
     description=(
-        "Generate daily Linux server CPU, memory, "
-        "filesystem and uptime utilization report "
+        "Generate Linux server CPU, memory, "
+        "filesystem and uptime utilization report every 5 minutes "
         "from Prometheus/node_exporter"
     ),
 
@@ -540,31 +540,29 @@ with DAG(
             report
         )
 
-        print(
-            f"Report generated: {report_file}"
-        )
+        if not report_file.exists():
+            raise FileNotFoundError(
+                f"Excel report was not created: {report_file}"
+            )
 
-        return str(report_file)
+        print(f"Report generated: {report_file}")
 
-    @task
-    def send_report():
-        report_file = "/tmp/linux_utilization_report.xlsx"
-
-        smtp_hook = SmtpHook(smtp_conn_id="smtp_default")
+        # Send the report from this same task. This is important when
+        # Airflow tasks run in separate Kubernetes pods: /tmp is local
+        # to each pod and is not shared between tasks.
+        smtp_hook = SmtpHook(smtp_conn_id=SMTP_CONN_ID)
 
         with smtp_hook:
             smtp_hook.send_email_smtp(
-                to=["senghanikeval@gmail.com"],
+                to=EMAIL_TO,
                 subject="Linux Server Utilization Report",
                 html_content="""
                     <h3>Linux Server Utilization Report</h3>
                     <p>Please find the latest server utilization report attached.</p>
                 """,
-                files=[report_file],
+                files=[str(report_file)],
             )
 
-    report = generate_report()
-
-    send_report()
+        print(f"Report emailed to: {', '.join(EMAIL_TO)}")
 
 
