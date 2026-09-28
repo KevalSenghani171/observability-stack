@@ -37,7 +37,9 @@ triggerer:
     enabled: true
     size: 1Gi
     storageClassName: ebs-sc
-    
+
+apiSecretKeySecretName: airflow-api-secret
+
 extraEnv: |
   - name: _PIP_ADDITIONAL_REQUIREMENTS
     value: "openpyxl==3.1.5"
