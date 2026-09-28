@@ -547,57 +547,21 @@ with DAG(
         return str(report_file)
 
     @task
-    def send_report(report_file):
+    def send_report():
+        report_file = "/tmp/linux_utilization_report.xlsx"
 
-        hook = SmtpHook(
-            smtp_conn_id=SMTP_CONN_ID
-        )
+        smtp_hook = SmtpHook(smtp_conn_id="smtp_default")
 
-        hook.send_email_smtp(
-            to="EMAIL_TO",
-
-            subject=(
-                "Linux Server Utilization Report"
-            ),
-
-            html_content=f"""
-            <html>
-            <body>
-
-            <h2>Linux Server Utilization Report</h2>
-
-            <p>
-            Please find the Linux server utilization
-            report attached.
-            </p>
-
-            <p>
-            Report period: last {REPORT_HOURS} hours
-            </p>
-
-            <p>
-            Metrics included:
-            </p>
-
-            <ul>
-                <li>CPU utilization - Min / Max / Average</li>
-                <li>Memory utilization - Min / Max / Average</li>
-                <li>Filesystem / Mountpoint utilization</li>
-                <li>Server uptime</li>
-            </ul>
-
-            </body>
-            </html>
-            """,
-
-            files=[
-                report_file
-            ],
-        )
-
-        print(
-            f"Report emailed to: {EMAIL_TO}"
-        )
+        with smtp_hook:
+            smtp_hook.send_email_smtp(
+                to=["senghanikeval@gmail.com"],
+                subject="Linux Server Utilization Report",
+                html_content="""
+                    <h3>Linux Server Utilization Report</h3>
+                    <p>Please find the latest server utilization report attached.</p>
+                """,
+                files=[report_file],
+            )
 
     report = generate_report()
 
