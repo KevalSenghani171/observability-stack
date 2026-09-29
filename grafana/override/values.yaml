@@ -32,7 +32,17 @@ envValueFrom:
     secretKeyRef:
       name: grafana-db-credentials
       key: database
-
+      
+extraSecretMounts:
+  - name: grafana-aws-secret
+    mountPath: /mnt/secrets-store
+    secretName: ""
+    readOnly: true
+    csi:
+      driver: secrets-store.csi.k8s.io
+      readOnly: true
+      volumeAttributes:
+        secretProviderClass: grafana-aws-secret
 
 vault:
   enabled: false
