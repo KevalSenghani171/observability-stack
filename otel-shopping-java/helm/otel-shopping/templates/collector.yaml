@@ -2,19 +2,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "otel-shopping.fullname" . }}-collector
+  name: {{ include "otel-shopping-java.fullname" . }}-collector
   labels:
-    {{- include "otel-shopping.labels" . | nindent 4 }}
+    {{- include "otel-shopping-java.labels" . | nindent 4 }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "otel-shopping.name" . }}-collector
+      app.kubernetes.io/name: {{ include "otel-shopping-java.name" . }}-collector
       app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: {{ include "otel-shopping.name" . }}-collector
+        app.kubernetes.io/name: {{ include "otel-shopping-java.name" . }}-collector
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       containers:
@@ -33,14 +33,14 @@ spec:
       volumes:
         - name: config
           configMap:
-            name: {{ include "otel-shopping.fullname" . }}-collector
+            name: {{ include "otel-shopping-java.fullname" . }}-collector
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "otel-shopping.fullname" . }}-collector
+  name: {{ include "otel-shopping-java.fullname" . }}-collector
   labels:
-    {{- include "otel-shopping.labels" . | nindent 4 }}
+    {{- include "otel-shopping-java.labels" . | nindent 4 }}
 spec:
   type: ClusterIP
   ports:
@@ -49,6 +49,6 @@ spec:
       targetPort: otlp-grpc
       protocol: TCP
   selector:
-    app.kubernetes.io/name: {{ include "otel-shopping.name" . }}-collector
+    app.kubernetes.io/name: {{ include "otel-shopping-java.name" . }}-collector
     app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}

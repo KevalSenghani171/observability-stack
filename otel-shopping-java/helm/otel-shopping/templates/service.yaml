@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "otel-shopping.fullname" . }}
+  name: {{ include "otel-shopping-java.fullname" . }}
   labels:
-    {{- include "otel-shopping.labels" . | nindent 4 }}
+    {{- include "otel-shopping-java.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
   ports:
@@ -12,5 +12,5 @@ spec:
       targetPort: http
       protocol: TCP
   selector:
-    app.kubernetes.io/name: {{ include "otel-shopping.name" . }}
+    app.kubernetes.io/name: {{ include "otel-shopping-java.name" . }}
     app.kubernetes.io/instance: {{ .Release.Name }}

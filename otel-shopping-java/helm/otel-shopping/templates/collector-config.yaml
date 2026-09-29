@@ -2,9 +2,9 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "otel-shopping.fullname" . }}-collector
+  name: {{ include "otel-shopping-java.fullname" . }}-collector
   labels:
-    {{- include "otel-shopping.labels" . | nindent 4 }}
+    {{- include "otel-shopping-java.labels" . | nindent 4 }}
 data:
   collector.yaml: |
     receivers:

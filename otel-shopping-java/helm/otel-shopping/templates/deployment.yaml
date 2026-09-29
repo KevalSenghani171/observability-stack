@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "otel-shopping.fullname" . }}
+  name: {{ include "otel-shopping-java.fullname" . }}
   labels:
-    {{- include "otel-shopping.labels" . | nindent 4 }}
+    {{- include "otel-shopping-java.labels" . | nindent 4 }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ include "otel-shopping.name" . }}
+      app.kubernetes.io/name: {{ include "otel-shopping-java.name" . }}
       app.kubernetes.io/instance: {{ .Release.Name }}
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: {{ include "otel-shopping.name" . }}
+        app.kubernetes.io/name: {{ include "otel-shopping-java.name" . }}
         app.kubernetes.io/instance: {{ .Release.Name }}
     spec:
       {{- with .Values.imagePullSecrets }}
@@ -28,18 +28,18 @@ spec:
             - name: http
               containerPort: 8080
               protocol: TCP
-          env:
+          {% comment %} env:
             - name: OTEL_SERVICE_NAME
               value: {{ .Values.app.otelServiceName | quote }}
             {{- if .Values.otel.enabled }}
             - name: OTEL_EXPORTER_OTLP_ENDPOINT
-              value: "http://{{ include "otel-shopping.fullname" . }}-collector:{{ .Values.otel.collector.service.port }}"
+              value: "http://{{ include "otel-shopping-java.fullname" . }}-collector:{{ .Values.otel.collector.service.port }}"
             - name: OTEL_EXPORTER_OTLP_PROTOCOL
               value: "grpc"
             {{- end }}
             {{- with .Values.app.extraEnv }}
             {{- toYaml . | nindent 12 }}
-            {{- end }}
+            {{- end }} {% endcomment %}
           readinessProbe:
             httpGet:
               path: /actuator/health
