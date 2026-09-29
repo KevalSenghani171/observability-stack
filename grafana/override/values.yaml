@@ -1,16 +1,16 @@
-extraLabels: 
-  app: read-vault-secret
+# extraLabels: 
+#   app: read-vault-secret
 
-command:
-  - sh
-  - -c
-  - |
-    . /vault/secrets/mysql-secret
-    exec /run.sh
+# command:
+#   - sh
+#   - -c
+#   - |
+#     . /vault/secrets/mysql-secret
+#     exec /run.sh
 
-serviceAccount:
-  create: false
-  name: vault-serviceaccount
+# serviceAccount:
+#   create: false
+#   name: vault-serviceaccount
 
 envValueFrom:
   GF_DATABASE_USER:
@@ -32,7 +32,7 @@ envValueFrom:
     secretKeyRef:
       name: grafana-db-credentials
       key: database
-      
+
 extraSecretMounts:
   - name: grafana-aws-secret
     mountPath: /mnt/secrets-store
