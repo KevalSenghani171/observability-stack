@@ -1,0 +1,6 @@
+apiVersion: v2
+name: otel-shopping
+description: Helm chart for the Java OpenTelemetry shopping demo and an in-cluster OTLP collector
+type: application
+version: 0.1.0
+appVersion: "1.0.0"

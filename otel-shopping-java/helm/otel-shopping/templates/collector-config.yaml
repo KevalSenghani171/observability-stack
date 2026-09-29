@@ -1,0 +1,23 @@
+{{- if .Values.otel.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "otel-shopping.fullname" . }}-collector
+  labels:
+    {{- include "otel-shopping.labels" . | nindent 4 }}
+data:
+  collector.yaml: |
+    receivers:
+      otlp:
+        protocols:
+          grpc:
+            endpoint: 0.0.0.0:4317
+    exporters:
+      debug:
+        verbosity: basic
+    service:
+      pipelines:
+        traces:
+          receivers: [otlp]
+          exporters: [debug]
+{{- end }}
