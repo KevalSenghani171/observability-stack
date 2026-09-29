@@ -139,6 +139,7 @@ extraVolumeMounts:
     mountPath: /etc/grafana/provisioning
   - name: grafana-aws-secret
     mountPath: /mnt/secrets-store
+    secretName: grafana-aws-secret
     readOnly: true
 
 datasources:
