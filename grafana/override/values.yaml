@@ -46,11 +46,32 @@ persistence:
   finalizers:
     - kubernetes.io/pvc-protection
 
+
 service:
+  type: ClusterIP
+  port: 80
+
+ingress:
   enabled: true
-  type: NodePort
-  port: 3000
-  targetPort: 3000
+  ingressClassName: nginx
+
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
+
+  hosts:
+    - grafana-keval.duckdns.org
+
+  path: /
+  pathType: Prefix
+
+  tls: []
+
+# service:
+#   enabled: true
+#   type: NodePort
+#   port: 3000
+#   targetPort: 3000
 
 resources:
   limits:
