@@ -21,7 +21,7 @@ echo -e "\n"
 cd tempo 
 ls -l
 
-helm upgrade --install tempo grafana-community/tempo -f values.yaml -f override/values.yaml -n devops-tools    
+helm upgrade --install tempo . -f values.yaml -f override/values.yaml -n devops-tools    
 
 kubectl get all -n  devops-tools 
 
