@@ -1,4 +1,24 @@
+
 server:
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+      nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+      nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
+
+    hosts:
+      - prometheus-keval.duckdns.org
+
+    path: /
+    pathType: Prefix
+
+    tls:
+      - secretName: prometheus-tls
+        hosts:
+          - prometheus-keval.duckdns.org
   image:
     repository: quay.io/prometheus/prometheus
     tag: "v3.10.0"
@@ -8,10 +28,14 @@ server:
     accessModes:
       - ReadWriteOnce
     size: 10Gi
+  # service:
+  #   enabled: true
+  #   servicePort: 9090
+  #   type: NodePort
   service:
     enabled: true
-    servicePort: 9090
-    type: NodePort
+    servicePort: 80
+    type: ClusterIP
 
 extraScrapeConfigs: |
   - job_name: 'my-app'
