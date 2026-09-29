@@ -122,21 +122,17 @@ extraInitContainers:
     volumeMounts:
       - name: grafana-provisioning
         mountPath: /var/lib/grafana/dashboards
-
+        
 extraVolumes:
   - name: grafana-provisioning
     persistentVolumeClaim:
       claimName: grafana-provisioning
-  - name: grafana-aws-secret
-    csi:
-      driver: secrets-store.csi.k8s.io
-      readOnly: true
-      volumeAttributes:
-        secretProviderClass: grafana-aws-secret
 
 extraVolumeMounts:
   - name: grafana-provisioning
     mountPath: /etc/grafana/provisioning
+
+extraSecretMounts:
   - name: grafana-aws-secret
     mountPath: /mnt/secrets-store
     secretName: grafana-aws-secret
