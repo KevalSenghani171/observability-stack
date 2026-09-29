@@ -33,16 +33,7 @@ envValueFrom:
       name: grafana-db-credentials
       key: database
 
-extraSecretMounts:
-  - name: grafana-aws-secret
-    mountPath: /mnt/secrets-store
-    secretName: ""
-    readOnly: true
-    csi:
-      driver: secrets-store.csi.k8s.io
-      readOnly: true
-      volumeAttributes:
-        secretProviderClass: grafana-aws-secret
+
 
 vault:
   enabled: false
@@ -136,10 +127,19 @@ extraVolumes:
   - name: grafana-provisioning
     persistentVolumeClaim:
       claimName: grafana-provisioning
+  - name: grafana-aws-secret
+    csi:
+      driver: secrets-store.csi.k8s.io
+      readOnly: true
+      volumeAttributes:
+        secretProviderClass: grafana-aws-secret
 
 extraVolumeMounts:
   - name: grafana-provisioning
     mountPath: /etc/grafana/provisioning
+  - name: grafana-aws-secret
+    mountPath: /mnt/secrets-store
+    readOnly: true
 
 datasources:
  datasources.yaml:
