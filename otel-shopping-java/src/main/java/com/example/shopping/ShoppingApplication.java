@@ -24,7 +24,7 @@ public class ShoppingApplication {
                               @Value("${OTEL_SERVICE_NAME:shopping-api}") String serviceName) {
     var exporter = OtlpGrpcSpanExporter.builder().setEndpoint(endpoint).build();
     var provider = SdkTracerProvider.builder()
-        .setResource(Resource.getDefault().toBuilder().put(ResourceAttributes.SERVICE_NAME, serviceName).build())
+        .setResource(Resource.getDefault().toBuilder().put(AttributeKey.stringKey("service.name"), serviceName).build())
         .addSpanProcessor(BatchSpanProcessor.builder(exporter).build()).build();
     return OpenTelemetrySdk.builder().setTracerProvider(provider)
         .setPropagators(ContextPropagators.create(W3CTraceContextPropagator.getInstance())).build();
