@@ -12,24 +12,46 @@ serviceAccount:
   create: false
   name: vault-serviceaccount
 
+envValueFrom:
+  GF_DATABASE_USER:
+    secretKeyRef:
+      name: grafana-db-credentials
+      key: username
+
+  GF_DATABASE_PASSWORD:
+    secretKeyRef:
+      name: grafana-db-credentials
+      key: password
+
+  GF_DATABASE_HOST:
+    secretKeyRef:
+      name: grafana-db-credentials
+      key: host
+
+  GF_DATABASE_NAME:
+    secretKeyRef:
+      name: grafana-db-credentials
+      key: database
+
+
 vault:
-  enabled: true
+  enabled: false
 
-  annotations:
-    vault.hashicorp.com/agent-inject: "true"
-    vault.hashicorp.com/role: "vault-role"
-    vault.hashicorp.com/service: "http://vault.devops-tools.svc:8200"
+  # annotations:
+  #   vault.hashicorp.com/agent-inject: "true"
+  #   vault.hashicorp.com/role: "vault-role"
+  #   vault.hashicorp.com/service: "http://vault.devops-tools.svc:8200"
 
-    vault.hashicorp.com/agent-inject-secret-mysql-secret: "secret/data/mysql-secret"
+  #   vault.hashicorp.com/agent-inject-secret-mysql-secret: "secret/data/mysql-secret"
 
-    vault.hashicorp.com/agent-inject-template-mysql-secret: |
-      {{- with secret "secret/data/mysql-secret" }}
-      export GF_DATABASE_TYPE="mysql"
-      export GF_DATABASE_HOST="{{ .Data.data.host }}"
-      export GF_DATABASE_USER="{{ .Data.data.username }}"
-      export GF_DATABASE_PASSWORD="{{ .Data.data.password }}"
-      export GF_DATABASE_NAME="{{ .Data.data.database }}"
-      {{- end }}
+  #   vault.hashicorp.com/agent-inject-template-mysql-secret: |
+  #     {{- with secret "secret/data/mysql-secret" }}
+  #     export GF_DATABASE_TYPE="mysql"
+  #     export GF_DATABASE_HOST="{{ .Data.data.host }}"
+  #     export GF_DATABASE_USER="{{ .Data.data.username }}"
+  #     export GF_DATABASE_PASSWORD="{{ .Data.data.password }}"
+  #     export GF_DATABASE_NAME="{{ .Data.data.database }}"
+  #     {{- end }}
 
 image:
   registry: docker.io
