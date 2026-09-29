@@ -15,22 +15,22 @@
 envValueFrom:
   GF_DATABASE_USER:
     secretKeyRef:
-      name: grafana-db-credentials
+      name: grafana-aws-secret
       key: username
 
   GF_DATABASE_PASSWORD:
     secretKeyRef:
-      name: grafana-db-credentials
+      name: grafana-aws-secret
       key: password
 
   GF_DATABASE_HOST:
     secretKeyRef:
-      name: grafana-db-credentials
+      name: grafana-aws-secret
       key: host
 
   GF_DATABASE_NAME:
     secretKeyRef:
-      name: grafana-db-credentials
+      name: grafana-aws-secret
       key: database
 
 
