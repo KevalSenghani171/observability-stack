@@ -5,7 +5,9 @@ image:
   tag: latest
   pullPolicy: IfNotPresent
 
-imagePullSecrets: []
+imagePullSecrets: 
+  - name: dockerhub-secret
+  
 nameOverride: ""
 fullnameOverride: ""
 
@@ -17,14 +19,6 @@ resources: {}
 nodeSelector: {}
 tolerations: []
 affinity: []
-
-otel:
-  enabled: false
-  collector:
-    image: otel/opentelemetry-collector-contrib:0.111.0
-    service:
-      port: 4317
-    resources: {}
 
 app:
   otelServiceName: otel-shopping-java
