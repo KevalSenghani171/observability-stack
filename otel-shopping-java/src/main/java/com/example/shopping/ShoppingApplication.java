@@ -1,6 +1,8 @@
 
 package com.example.shopping;
 
+import jakarta.annotation.PreDestroy;
+
 import io.opentelemetry.api.GlobalOpenTelemetry;
 import io.opentelemetry.api.OpenTelemetry;
 import io.opentelemetry.api.common.AttributeKey;
@@ -9,14 +11,13 @@ import io.opentelemetry.api.trace.propagation.W3CTraceContextPropagator;
 import io.opentelemetry.context.propagation.ContextPropagators;
 import io.opentelemetry.exporter.otlp.logs.OtlpGrpcLogRecordExporter;
 import io.opentelemetry.exporter.otlp.trace.OtlpGrpcSpanExporter;
+import io.opentelemetry.instrumentation.logback.appender.v1_0.OpenTelemetryAppender;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.opentelemetry.sdk.logs.SdkLoggerProvider;
 import io.opentelemetry.sdk.logs.export.BatchLogRecordProcessor;
 import io.opentelemetry.sdk.resources.Resource;
 import io.opentelemetry.sdk.trace.SdkTracerProvider;
 import io.opentelemetry.sdk.trace.export.BatchSpanProcessor;
-
-import jakarta.annotation.PreDestroy;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -40,7 +41,7 @@ public class ShoppingApplication {
             @Value("${OTEL_SERVICE_NAME:shopping-api}")
             String serviceName) {
 
-        // Define common resource attributes.
+        // Configure common resource attributes.
         Resource resource = Resource.getDefault()
                 .toBuilder()
                 .put(AttributeKey.stringKey("service.name"), serviceName)
@@ -97,8 +98,11 @@ public class ShoppingApplication {
 
         this.openTelemetrySdk = otel;
 
-        // Register SDK globally for OpenTelemetry integrations.
+        // Register the SDK globally.
         GlobalOpenTelemetry.set(otel);
+
+        // Explicitly connect the Logback appender to this SDK.
+        OpenTelemetryAppender.install(otel);
 
         return otel;
     }
@@ -121,7 +125,6 @@ public class ShoppingApplication {
 
     @PreDestroy
     public void shutdownOpenTelemetry() {
-
         if (openTelemetrySdk != null) {
             openTelemetrySdk.close();
         }
