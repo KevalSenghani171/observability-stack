@@ -121,3 +121,27 @@ helm uninstall otel-shopping -n demo
 The chart defaults to one application replica and an in-memory H2 database. Data is
 lost when the application pod restarts. The collector's debug exporter is intended
 for learning and troubleshooting, not long-term trace storage.
+
+## Web UI
+
+The application now serves a responsive storefront from Spring Boot's static resources.
+Open `http://localhost:8080/` to browse products, paginate, add items to a cart, and run
+through the demo checkout. The UI calls the existing `/api` endpoints, so it is included
+in the same Docker image and Helm deployment; no separate frontend service is needed.
+
+After adding the UI, rebuild and push the container image, then upgrade the Helm release:
+
+```bash
+docker build -t YOUR_DOCKERHUB_USERNAME/otel-shopping:1.1.0 .
+docker push YOUR_DOCKERHUB_USERNAME/otel-shopping:1.1.0
+helm upgrade --install otel-shopping ./helm/otel-shopping \\
+  --namespace demo --create-namespace \\
+  --set image.repository=YOUR_DOCKERHUB_USERNAME/otel-shopping \\
+  --set image.tag=1.1.0
+```
+
+Then port-forward and browse to `http://localhost:8080/`:
+
+```bash
+kubectl port-forward -n demo svc/otel-shopping-otel-shopping 8080:8080
+```
