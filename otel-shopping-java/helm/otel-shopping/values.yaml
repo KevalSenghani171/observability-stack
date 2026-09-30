@@ -2,7 +2,7 @@ replicaCount: 1
 
 image:
   repository: kevalsenghani/otel-shopping-java
-  tag: latest
+  tag: "1.0.1"
   pullPolicy: IfNotPresent
 
 imagePullSecrets: 
