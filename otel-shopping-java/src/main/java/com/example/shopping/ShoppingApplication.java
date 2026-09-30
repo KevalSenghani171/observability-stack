@@ -33,7 +33,7 @@ public class ShoppingApplication {
 
     @Bean
     OpenTelemetry openTelemetry(
-            @Value("${OTEL_EXPORTER_OTLP_ENDPOINT:http://localhost:4317}") String endpoint,
+            @Value("${OTEL_EXPORTER_OTLP_ENDPOINT:http://otel-collector-opentelemetry-collector.observability.svc.cluster.local:4317}") String endpoint,
             @Value("${OTEL_SERVICE_NAME:shopping-api}") String serviceName) {
 
         Resource resource = Resource.getDefault()
