@@ -53,7 +53,7 @@ ENV OTEL_SERVICE_NAME=java-app-manual-instrumentation \
     OTEL_METRICS_EXPORTER=none \
     OTEL_LOGS_EXPORTER=none \
     OTEL_EXPORTER_OTLP_PROTOCOL=grpc \
-    OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector.observability.svc.cluster.local:4317
+    OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector-opentelemetry-collector.observability.svc.cluster.local:4317
     # OTEL_RESOURCE_ATTRIBUTES="service.name=qlik-java-app,deployment.environment=dev" \
     # OTEL_JAVAAGENT_EXTENSIONS=/app/pyroscope-otel.jar \
     # OTEL_PYROSCOPE_START_PROFILING=true \
