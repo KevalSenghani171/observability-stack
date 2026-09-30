@@ -28,18 +28,6 @@ spec:
             - name: http
               containerPort: 8080
               protocol: TCP
-          env:
-            - name: OTEL_SERVICE_NAME
-              value: {{ .Values.app.otelServiceName | quote }}
-            {{- if .Values.otel.enabled }}
-            - name: OTEL_EXPORTER_OTLP_ENDPOINT
-              value: "http://{{ include "otel-shopping.fullname" . }}-collector:{{ .Values.otel.collector.service.port }}"
-            - name: OTEL_EXPORTER_OTLP_PROTOCOL
-              value: "grpc"
-            {{- end }}
-            {{- with .Values.app.extraEnv }}
-            {{- toYaml . | nindent 12 }}
-            {{- end }}
           readinessProbe:
             httpGet:
               path: /actuator/health
