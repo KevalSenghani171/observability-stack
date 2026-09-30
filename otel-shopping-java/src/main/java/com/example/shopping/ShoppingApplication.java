@@ -1,31 +1,32 @@
 
 package com.example.shopping;
 
+import io.opentelemetry.api.GlobalOpenTelemetry;
 import io.opentelemetry.api.OpenTelemetry;
+import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.api.trace.propagation.W3CTraceContextPropagator;
-import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.context.propagation.ContextPropagators;
-import io.opentelemetry.exporter.otlp.trace.OtlpGrpcSpanExporter;
 import io.opentelemetry.exporter.otlp.logs.OtlpGrpcLogRecordExporter;
+import io.opentelemetry.exporter.otlp.trace.OtlpGrpcSpanExporter;
 import io.opentelemetry.sdk.OpenTelemetrySdk;
 import io.opentelemetry.sdk.logs.SdkLoggerProvider;
 import io.opentelemetry.sdk.logs.export.BatchLogRecordProcessor;
 import io.opentelemetry.sdk.resources.Resource;
 import io.opentelemetry.sdk.trace.SdkTracerProvider;
 import io.opentelemetry.sdk.trace.export.BatchSpanProcessor;
-import io.opentelemetry.api.logs.LoggerProvider;
-import io.opentelemetry.api.logs.Logger;
-import io.opentelemetry.api.logs.Severity;
-import io.opentelemetry.api.logs.LogRecordBuilder;
-import io.opentelemetry.api.GlobalOpenTelemetry;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.context.annotation.PreDestroy;
 
 @SpringBootApplication
 public class ShoppingApplication {
+
+    private OpenTelemetrySdk openTelemetrySdk;
 
     public static void main(String[] args) {
         SpringApplication.run(ShoppingApplication.class, args);
@@ -33,15 +34,18 @@ public class ShoppingApplication {
 
     @Bean
     OpenTelemetry openTelemetry(
-            @Value("${OTEL_EXPORTER_OTLP_ENDPOINT:http://otel-collector-opentelemetry-collector.observability.svc.cluster.local:4317}") String endpoint,
-            @Value("${OTEL_SERVICE_NAME:shopping-api}") String serviceName) {
+            @Value("${OTEL_EXPORTER_OTLP_ENDPOINT:http://otel-collector-opentelemetry-collector.observability.svc.cluster.local:4317}")
+            String endpoint,
+
+            @Value("${OTEL_SERVICE_NAME:shopping-api}")
+            String serviceName) {
 
         Resource resource = Resource.getDefault()
                 .toBuilder()
                 .put(AttributeKey.stringKey("service.name"), serviceName)
                 .build();
 
-        // Existing trace exporter: preserves Tempo integration
+        // Trace exporter: sends spans to the OpenTelemetry Collector.
         var spanExporter = OtlpGrpcSpanExporter.builder()
                 .setEndpoint(endpoint)
                 .build();
@@ -53,7 +57,7 @@ public class ShoppingApplication {
                 )
                 .build();
 
-        // New log exporter: sends application logs to the Collector
+        // Log exporter: sends application log records to the Collector.
         var logExporter = OtlpGrpcLogRecordExporter.builder()
                 .setEndpoint(endpoint)
                 .build();
@@ -65,7 +69,7 @@ public class ShoppingApplication {
                 )
                 .build();
 
-        OpenTelemetry otel = OpenTelemetrySdk.builder()
+        OpenTelemetrySdk otel = OpenTelemetrySdk.builder()
                 .setTracerProvider(tracerProvider)
                 .setLoggerProvider(loggerProvider)
                 .setPropagators(
@@ -75,7 +79,9 @@ public class ShoppingApplication {
                 )
                 .build();
 
-        // Makes the SDK available to the Logback OpenTelemetry appender
+        this.openTelemetrySdk = otel;
+
+        // Register the SDK globally for OpenTelemetry integrations.
         GlobalOpenTelemetry.set(otel);
 
         return otel;
@@ -83,6 +89,16 @@ public class ShoppingApplication {
 
     @Bean
     Tracer tracer(OpenTelemetry otel) {
-        return otel.getTracer("com.example.shopping", "1.0.0");
+        return otel.getTracer(
+                "com.example.shopping",
+                "1.0.0"
+        );
+    }
+
+    @PreDestroy
+    public void shutdownOpenTelemetry() {
+        if (openTelemetrySdk != null) {
+            openTelemetrySdk.close();
+        }
     }
 }
