@@ -16,12 +16,12 @@ import io.opentelemetry.sdk.resources.Resource;
 import io.opentelemetry.sdk.trace.SdkTracerProvider;
 import io.opentelemetry.sdk.trace.export.BatchSpanProcessor;
 
+import jakarta.annotation.PreDestroy;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.DependsOn;
-import org.springframework.context.annotation.PreDestroy;
 
 @SpringBootApplication
 public class ShoppingApplication {
@@ -40,52 +40,72 @@ public class ShoppingApplication {
             @Value("${OTEL_SERVICE_NAME:shopping-api}")
             String serviceName) {
 
+        // Define common resource attributes.
         Resource resource = Resource.getDefault()
                 .toBuilder()
                 .put(AttributeKey.stringKey("service.name"), serviceName)
                 .build();
 
-        // Trace exporter: sends spans to the OpenTelemetry Collector.
-        var spanExporter = OtlpGrpcSpanExporter.builder()
-                .setEndpoint(endpoint)
-                .build();
+        // -----------------------------------------
+        // Configure trace exporter
+        // -----------------------------------------
 
-        var tracerProvider = SdkTracerProvider.builder()
-                .setResource(resource)
-                .addSpanProcessor(
-                        BatchSpanProcessor.builder(spanExporter).build()
-                )
-                .build();
+        OtlpGrpcSpanExporter spanExporter =
+                OtlpGrpcSpanExporter.builder()
+                        .setEndpoint(endpoint)
+                        .build();
 
-        // Log exporter: sends application log records to the Collector.
-        var logExporter = OtlpGrpcLogRecordExporter.builder()
-                .setEndpoint(endpoint)
-                .build();
-
-        var loggerProvider = SdkLoggerProvider.builder()
-                .setResource(resource)
-                .addLogRecordProcessor(
-                        BatchLogRecordProcessor.builder(logExporter).build()
-                )
-                .build();
-
-        OpenTelemetrySdk otel = OpenTelemetrySdk.builder()
-                .setTracerProvider(tracerProvider)
-                .setLoggerProvider(loggerProvider)
-                .setPropagators(
-                        ContextPropagators.create(
-                                W3CTraceContextPropagator.getInstance()
+        SdkTracerProvider tracerProvider =
+                SdkTracerProvider.builder()
+                        .setResource(resource)
+                        .addSpanProcessor(
+                                BatchSpanProcessor.builder(spanExporter).build()
                         )
-                )
-                .build();
+                        .build();
+
+        // -----------------------------------------
+        // Configure log exporter
+        // -----------------------------------------
+
+        OtlpGrpcLogRecordExporter logExporter =
+                OtlpGrpcLogRecordExporter.builder()
+                        .setEndpoint(endpoint)
+                        .build();
+
+        SdkLoggerProvider loggerProvider =
+                SdkLoggerProvider.builder()
+                        .setResource(resource)
+                        .addLogRecordProcessor(
+                                BatchLogRecordProcessor.builder(logExporter).build()
+                        )
+                        .build();
+
+        // -----------------------------------------
+        // Build OpenTelemetry SDK
+        // -----------------------------------------
+
+        OpenTelemetrySdk otel =
+                OpenTelemetrySdk.builder()
+                        .setTracerProvider(tracerProvider)
+                        .setLoggerProvider(loggerProvider)
+                        .setPropagators(
+                                ContextPropagators.create(
+                                        W3CTraceContextPropagator.getInstance()
+                                )
+                        )
+                        .build();
 
         this.openTelemetrySdk = otel;
 
-        // Register the SDK globally for OpenTelemetry integrations.
+        // Register SDK globally for OpenTelemetry integrations.
         GlobalOpenTelemetry.set(otel);
 
         return otel;
     }
+
+    // -----------------------------------------
+    // Tracer bean
+    // -----------------------------------------
 
     @Bean
     Tracer tracer(OpenTelemetry otel) {
@@ -95,8 +115,13 @@ public class ShoppingApplication {
         );
     }
 
+    // -----------------------------------------
+    // Graceful shutdown
+    // -----------------------------------------
+
     @PreDestroy
     public void shutdownOpenTelemetry() {
+
         if (openTelemetrySdk != null) {
             openTelemetrySdk.close();
         }
