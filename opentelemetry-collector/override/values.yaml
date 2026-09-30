@@ -5,6 +5,7 @@ image:
 
 mode: deployment
 
+
 config:
   receivers:
     otlp:
@@ -15,17 +16,20 @@ config:
           endpoint: 0.0.0.0:4318
 
   processors:
-    batch: {}
+    batch:
+      timeout: 5s
+      send_batch_size: 512
+
     resource:
       attributes:
         - action: upsert
-          key: service.name
-          from_attribute: service.name
+          key: deployment.environment
+          value: kubernetes
 
-        - action: upsert
-          key: k8s.namespace.name
-          from_attribute: k8s.namespace.name
   exporters:
+    debug:
+      verbosity: basic
+
     otlp/tempo:
       endpoint: tempo.devops-tools.svc.cluster.local:4317
       tls:
@@ -35,38 +39,23 @@ config:
       endpoint: http://loki.devops-tools.svc.cluster.local:3100/otlp
 
     prometheus:
-      endpoint: "0.0.0.0:8889"
+      endpoint: 0.0.0.0:8889
 
   service:
     pipelines:
       traces:
         receivers: [otlp]
-        processors: [resource,batch]
-        exporters: [debug,otlp/tempo]
+        processors: [resource, batch]
+        exporters: [debug, otlp/tempo]
 
       logs:
         receivers: [otlp]
-        processors: [resource,batch]
-        exporters: [debug,otlphttp/loki]
+        processors: [resource, batch]
+        exporters: [debug, otlphttp/loki]
 
       metrics:
         receivers: [otlp]
-        processors: [resource,batch]
+        processors: [resource, batch]
         exporters: [prometheus]
-
-# config:
-#   exporters:
-#     otlp/tempo:
-#       endpoint: tempo.devops-tools.svc.cluster.local:4317
-#       tls:
-#         insecure: true
-
-#   service:
-#     pipelines:
-#       traces:
-#         exporters:
-#           - debug
-#           - otlp/tempo
-
 
 
