@@ -1,37 +1,38 @@
 helm repo add secrets-store-csi-driver \
   https://kubernetes-sigs.github.io/secrets-store-csi-driver/charts
 
+helm repo update
+
+helm upgrade --install csi-secrets-store \
+  secrets-store-csi-driver/secrets-store-csi-driver \
+  -f values.yaml \
+  --namespace kube-system \
+  --set syncSecret.enabled=true
+
 helm repo add aws-secrets-manager \
   https://aws.github.io/secrets-store-csi-driver-provider-aws
 
 helm repo update
-
-
-helm install csi-secrets-store \
-  secrets-store-csi-driver/secrets-store-csi-driver \
-  --namespace kube-system \
-  --set syncSecret.enabled=true
-  
-  
-helm install secrets-provider-aws \
+ 
+helm upgrade --install secrets-provider-aws \
   aws-secrets-manager/secrets-store-csi-driver-provider-aws \
+  -f values.yaml \
   --namespace kube-system
   
 only try if above fails
-helm install secrets-provider-aws \
+helm upgrade --install secrets-provider-aws \
   aws-secrets-manager/secrets-store-csi-driver-provider-aws \
+  -f values.yaml \
   --namespace kube-system \
   --set secrets-store-csi-driver.install=false
   
   
-  
 helm repo add external-secrets https://charts.external-secrets.io
-
 helm repo update
-
 
 helm upgrade --install external-secrets \
   external-secrets/external-secrets \
+  -f values.yaml \
   --namespace external-secrets \
   --create-namespace \
   --set installCRDs=true \
