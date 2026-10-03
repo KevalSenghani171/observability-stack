@@ -39,6 +39,22 @@ helm upgrade --install external-secrets \
   --wait
   
 
+Create one custom policy in AWS IAM with below properties and attach that policy with role that are attached to all kubernetes nodes.
+
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret"
+            ],
+            "Resource": "arn:aws:secretsmanager:ap-south-1:{AWS-ACCOUNT}:secret:{SECRET-NAME}*"
+        }
+    ]
+}
+
 kubectl apply -f grafana-secretstore.yaml -n devops-tools
 
 
