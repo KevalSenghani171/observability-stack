@@ -43,7 +43,7 @@ grafana_pod=`kubectl -n devops-tools get po -l app.kubernetes.io/instance=grafan
 
 kubectl -n devops-tools exec -it ${grafana_pod} -c grafana -- rm -rf /var/lib/grafana/dashboards/OBS
 kubectl -n devops-tools cp grafana-resources/dashboards/OBS ${grafana_pod}:/var/lib/grafana/dashboards/ -c grafana
-kubectl -n devops-tools exec -it ${grafana_pod} -c grafana -- curl --config - -sS -X POST "http://localhost:3000/api/admin/provisioning/dashboards/reload"
+kubectl -n devops-tools exec -i ${grafana_pod} -c grafana -- sh -c 'printf "user = \"%s:%s\"\n" "$GF_SECURITY_ADMIN_USER" "$GF_SECURITY_ADMIN_PASSWORD" | curl --config - -sS -X POST -w "\nHTTP Status: %{http_code}\n"  http://localhost:3000/api/admin/provisioning/dashboards/reload'
 
 
 # kubectl -n devops-tools exec -it ${grafana_pod} -c grafana -- rm -rf /etc/grafana/provisioning/datasources 

@@ -203,7 +203,7 @@ dashboardProviders:
         updateIntervalSeconds: 10
         options:
           path: /var/lib/grafana/dashboards/OBS
-          foldersFromFilesStructure: false
+          foldersFromFilesStructure: true
 
 grafana.ini:
   database:
