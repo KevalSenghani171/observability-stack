@@ -132,7 +132,7 @@ extraVolumes:
 extraVolumeMounts:
   - name: grafana-provisioning
     mountPath: /var/lib/grafana/dashboards
-    readOnly: true
+    readOnly: false
 
 extraSecretMounts:
   - name: grafana-aws-secret
