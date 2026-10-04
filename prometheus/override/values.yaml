@@ -44,6 +44,10 @@ extraScrapeConfigs: |
   - job_name: 'qlik-java-app'
     static_configs:
       - targets: ['otel-collector-opentelemetry-collector.observability.svc.cluster.local:8888']
+  - job_name: 'windows-ec2'
+    static_configs:
+      - targets:
+          - '172.31.4.8:9182'
 
 # extraScrapeConfigs: |
 #   - job_name: prometheus-test2
