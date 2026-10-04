@@ -17,22 +17,26 @@ envValueFrom:
     secretKeyRef:
       name: grafana-aws-secret
       key: username
-
   GF_DATABASE_PASSWORD:
     secretKeyRef:
       name: grafana-aws-secret
       key: password
-
   GF_DATABASE_HOST:
     secretKeyRef:
       name: grafana-aws-secret
       key: host
-
   GF_DATABASE_NAME:
     secretKeyRef:
       name: grafana-aws-secret
       key: database
-
+  GF_SECURITY_ADMIN_USER:
+    secretKeyRef:
+      name: grafana-admin-secret
+      key: user
+  GF_SECURITY_ADMIN_PASSWORD:
+    secretKeyRef:
+      name: grafana-admin-secret
+      key: password
 
 
 vault:
@@ -130,12 +134,17 @@ extraVolumes:
 
 extraVolumeMounts:
   - name: grafana-provisioning
-    mountPath: /etc/grafana/provisioning
+    mountPath: /var/lib/grafana/dashboards
+    readOnly: true
 
 extraSecretMounts:
   - name: grafana-aws-secret
     mountPath: /mnt/secrets-store
     secretName: grafana-aws-secret
+    readOnly: true
+  - name: grafana-admin-secret
+    mountPath: /mnt/secrets-store
+    secretName: grafana-admin-secret
     readOnly: true
 
 datasources:
@@ -179,13 +188,14 @@ dashboardProviders:
       - name: OBS
         orgId: 1
         type: file
+        folder: OBS
         disableDeletion: false
         allowUiUpdates: false
         editable: true
         updateIntervalSeconds: 10
         options:
           path: /var/lib/grafana/dashboards/OBS
-          foldersFromFilesStructure: true
+          foldersFromFilesStructure: false
 
 grafana.ini:
   database:
