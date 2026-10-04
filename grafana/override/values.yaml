@@ -139,10 +139,6 @@ extraSecretMounts:
     mountPath: /mnt/secrets-store
     secretName: grafana-aws-secret
     readOnly: true
-  - name: grafana-admin-secret2
-    mountPath: /mnt/secrets-store
-    secretName: grafana-admin-secret2
-    readOnly: true
 
 datasources:
  datasources.yaml:
