@@ -29,14 +29,6 @@ envValueFrom:
     secretKeyRef:
       name: grafana-aws-secret
       key: database
-  GF_SECURITY_ADMIN_USER:
-    secretKeyRef:
-      name: grafana-admin-secret2
-      key: user
-  GF_SECURITY_ADMIN_PASSWORD:
-    secretKeyRef:
-      name: grafana-admin-secret2
-      key: password
 
 
 vault:
@@ -126,7 +118,12 @@ extraInitContainers:
     volumeMounts:
       - name: grafana-provisioning
         mountPath: /var/lib/grafana/dashboards
-        
+
+admin:
+  existingSecret: grafana-admin-secret2
+  userKey: username
+  passwordKey: password
+
 extraVolumes:
   - name: grafana-provisioning
     persistentVolumeClaim:
