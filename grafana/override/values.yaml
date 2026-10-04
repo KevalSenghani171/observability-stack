@@ -31,11 +31,11 @@ envValueFrom:
       key: database
   GF_SECURITY_ADMIN_USER:
     secretKeyRef:
-      name: grafana-admin-secret
+      name: grafana-admin-secret2
       key: user
   GF_SECURITY_ADMIN_PASSWORD:
     secretKeyRef:
-      name: grafana-admin-secret
+      name: grafana-admin-secret2
       key: password
 
 
@@ -142,9 +142,9 @@ extraSecretMounts:
     mountPath: /mnt/secrets-store
     secretName: grafana-aws-secret
     readOnly: true
-  - name: grafana-admin-secret
+  - name: grafana-admin-secret2
     mountPath: /mnt/secrets-store
-    secretName: grafana-admin-secret
+    secretName: grafana-admin-secret2
     readOnly: true
 
 datasources:
