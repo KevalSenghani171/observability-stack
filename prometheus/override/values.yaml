@@ -38,12 +38,12 @@ server:
     type: ClusterIP
 
 extraScrapeConfigs: |
-  - job_name: 'my-app'
-    static_configs:
-      - targets: ['my-app.default.svc.cluster.local:80']
-  - job_name: 'qlik-java-app'
-    static_configs:
-      - targets: ['otel-collector-opentelemetry-collector.observability.svc.cluster.local:8888']
+  # - job_name: 'my-app'
+  #   static_configs:
+  #     - targets: ['my-app.default.svc.cluster.local:80']
+  # - job_name: 'qlik-java-app'
+  #   static_configs:
+  #     - targets: ['otel-collector-opentelemetry-collector.observability.svc.cluster.local:8888']
   - job_name: 'windows-ec2'
     static_configs:
       - targets:
