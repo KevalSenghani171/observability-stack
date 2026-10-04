@@ -146,7 +146,7 @@ datasources:
    datasources:
     - name: prometheus-main
       type: prometheus
-      url: http://prometheus-server.devops-tools.svc.cluster.local:9090
+      url: https://prometheus-keval.duckdns.org
       uid: asdfasdf20gzkb
       httpMode: 'POST'
       editable: false
@@ -173,6 +173,21 @@ datasources:
       httpMode: 'POST'
       editable: false
       orgId: 1
+    - name: tempo-main
+      type: tempo
+      url: http://tempo.devops-tools.svc.cluster.local:3200
+      uid: vadfawefasdw5nuoc
+      editable: false
+      jsonData:
+          httpMethod: GET
+          serviceMap:
+            datasourceUid: prometheus
+          nodeGraph:
+            enabled: true
+          search:
+            hide: false
+          lokiSearch:
+            datasourceUid: bserfvdf4kpvkf
 
 dashboardProviders:
   dashboardproviders.yaml:
