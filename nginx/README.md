@@ -85,5 +85,43 @@ stream {
     }
 }
 
+Also if you have multiple dns entries add below line inside http section
+
+      server {
+        listen 80;
+        server_name grafana-keval.duckdns.org prometheus-keval.duckdns.org;
+
+        location / {
+            proxy_pass http://172.31.46.165:30080;
+
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+    }
+
 sudo nginx -t
 sudo systemctl reload nginx
+
+E.g Prometheus DNS in prometheus helm chart
+
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+      nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+      nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
+
+    hosts:
+      - prometheus-keval.duckdns.org
+
+    path: /
+    pathType: Prefix
+
+    tls:
+      - secretName: prometheus-tls
+        hosts:
+          - prometheus-keval.duckdns.org
