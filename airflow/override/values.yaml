@@ -14,7 +14,7 @@ ingress:
     pathType: Prefix
 
     hosts:
-      - name: myairflow.duckdns.org
+      - name: airflow-keval.duckdns.org
         tls:
           enabled: false
 
