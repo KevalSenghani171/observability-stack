@@ -31,8 +31,11 @@ from datetime import timedelta
 import pandas as pd
 import pendulum
 import requests
-from airflow.decorators import dag, task
-from airflow.models.param import Param
+try:  # Airflow 3
+    from airflow.sdk import Param, dag, task
+except ImportError:  # Airflow 2.x
+    from airflow.decorators import dag, task
+    from airflow.models.param import Param
 from airflow.utils.email import send_email
 
 log = logging.getLogger(__name__)
@@ -101,7 +104,7 @@ def _display_df(df: pd.DataFrame) -> pd.DataFrame:
         "timezone": Param("Asia/Kolkata", type="string"),
         "verify_ssl": Param(True, type="boolean"),
         "output_dir": Param("/opt/airflow/reports", type="string"),
-        "email_to": Param("you@example.com", type="string", description="Comma separated"),
+        "email_to": Param("senghanikeval@gmail.com", type="string", description="Comma separated"),
         "email_subject": Param("Prometheus CPU & Memory report", type="string"),
         "email_conn_id": Param("smtp_default", type="string"),
         "max_rows_in_body": Param(50, type="integer"),
@@ -115,14 +118,21 @@ def prometheus_to_excel_email_report():
         p = context["params"]
         tz = pendulum.timezone(p["timezone"])
 
-        if p["start"] and p["end"]:
-            start, end = pendulum.parse(p["start"], tz=tz), pendulum.parse(p["end"], tz=tz)
+        # A blank/whitespace value in the trigger form (e.g. " ") counts as "not set"
+        start_s = str(p.get("start") or "").strip()
+        end_s = str(p.get("end") or "").strip()
+
+        if start_s and end_s:
+            start, end = pendulum.parse(start_s, tz=tz), pendulum.parse(end_s, tz=tz)
         else:
-            start = context["data_interval_start"].in_timezone(tz)
-            end = context["data_interval_end"].in_timezone(tz)
-            if end <= start:  # manual trigger -> previous full day
+            d_start = context.get("data_interval_start")
+            d_end = context.get("data_interval_end")
+            if d_start and d_end and d_end > d_start:
+                start, end = d_start.in_timezone(tz), d_end.in_timezone(tz)
+            else:  # manual trigger / no interval -> previous full day
                 today = pendulum.now(tz).start_of("day")
                 start, end = today.subtract(days=1), today
+        log.info("Querying Prometheus from %s to %s", start, end)
 
         common = dict(
             base_url=p["prometheus_url"], start=start, end=end, step=p["step"],
