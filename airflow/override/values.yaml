@@ -3,7 +3,22 @@ redis:
     enabled: true
     size: 1Gi
     storageClassName: ebs-sc
+ingress:
+  apiServer:
+    enabled: true
 
+    annotations:
+      nginx.ingress.kubernetes.io/ssl-redirect: "false"
+
+    path: "/"
+    pathType: Prefix
+
+    hosts:
+      - name: myairflow.duckdns.org
+        tls:
+          enabled: false
+
+    ingressClassName: nginx
 # logs:
 #   persistence:
 #     enabled: true
