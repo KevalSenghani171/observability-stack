@@ -94,7 +94,7 @@ def _display_df(df: pd.DataFrame) -> pd.DataFrame:
     tags=["prometheus", "report", "excel", "email"],
     default_args={"retries": 1, "retry_delay": timedelta(minutes=2)},
     params={
-        "prometheus_url": Param("http://prometheus-server.devops-tools.svc.cluster.local:9090", type="string"),
+        "prometheus_url": Param("https://prometheus-keval.duckdns.org", type="string"),
         "cpu_query": Param(DEFAULT_CPU_QUERY, type="string"),
         "memory_query": Param(DEFAULT_MEM_QUERY, type="string"),
         "start": Param("", type="string", description="ISO datetime; blank = data interval start"),
