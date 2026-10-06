@@ -36,7 +36,7 @@ try:  # Airflow 3
 except ImportError:  # Airflow 2.x
     from airflow.decorators import dag, task
     from airflow.models.param import Param
-from airflow.utils.email import send_email
+from airflow.providers.smtp.hooks.smtp import SmtpHook
 
 log = logging.getLogger(__name__)
 
@@ -94,7 +94,7 @@ def _display_df(df: pd.DataFrame) -> pd.DataFrame:
     tags=["prometheus", "report", "excel", "email"],
     default_args={"retries": 1, "retry_delay": timedelta(minutes=2)},
     params={
-        "prometheus_url": Param("https://prometheus-keval.duckdns.org", type="string"),
+        "prometheus_url": Param("https://prometheus-keval.duckdns.org/", type="string"),
         "cpu_query": Param(DEFAULT_CPU_QUERY, type="string"),
         "memory_query": Param(DEFAULT_MEM_QUERY, type="string"),
         "start": Param("", type="string", description="ISO datetime; blank = data interval start"),
@@ -212,13 +212,16 @@ def prometheus_to_excel_email_report():
         """
 
         recipients = [e.strip() for e in p["email_to"].split(",") if e.strip()]
-        send_email(
-            to=recipients,
-            subject=p["email_subject"],
-            html_content=html,
-            files=[excel_path],
-            conn_id=p["email_conn_id"],
-        )
+        # SmtpHook reads host/port/login/TLS from the Airflow connection itself
+        # (airflow.utils.email.send_email takes the host from airflow.cfg instead,
+        # which falls back to localhost:25 -> "Connection refused").
+        with SmtpHook(smtp_conn_id=p["email_conn_id"]) as smtp:
+            smtp.send_email_smtp(
+                to=recipients,
+                subject=p["email_subject"],
+                html_content=html,
+                files=[excel_path],
+            )
         log.info("Email sent to %s with attachment %s", recipients, excel_path)
 
     data = fetch_metrics()
