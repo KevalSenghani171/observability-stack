@@ -48,7 +48,24 @@ extraScrapeConfigs: |
     static_configs:
       - targets:
           - '172.31.4.8:9182'
-
+  - job_name: 'kubelet'
+    scheme: https
+    tls_config:
+      insecure_skip_verify: true
+    bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+    kubernetes_sd_configs:
+      - role: node
+    relabel_configs:
+      - action: replace
+        source_labels:
+          - __meta_kubernetes_node_name
+        target_label: node
+      - action: replace
+        source_labels:
+          - __address__
+        regex: '([^:]+)(?::\d+)?'
+        replacement: '${1}:10250'
+        target_label: __address__
 # extraScrapeConfigs: |
 #   - job_name: prometheus-test2
 #     static_configs:
