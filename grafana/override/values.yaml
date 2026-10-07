@@ -178,6 +178,7 @@ datasources:
       url: http://tempo.devops-tools.svc.cluster.local:3200
       uid: vadfawefasdw5nuoc
       editable: false
+      orgId: 2
       jsonData:
           httpMethod: GET
           serviceMap:
@@ -222,6 +223,7 @@ datasources:
       url: http://tempo.devops-tools.svc.cluster.local:3200
       uid: vadfawefasdw5nuoc
       editable: false
+      orgId: 2
       jsonData:
           httpMethod: GET
           serviceMap:
