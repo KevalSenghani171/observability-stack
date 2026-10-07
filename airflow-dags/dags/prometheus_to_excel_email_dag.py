@@ -14,6 +14,7 @@ Requires: requests, pandas, openpyxl. Airflow 2.4+ / 3.x.
 from __future__ import annotations
 
 import logging
+import json
 import os
 import re
 from datetime import timedelta
@@ -183,7 +184,8 @@ def prometheus_to_excel_email_report():
 
         out = df.copy()
         out["Time"] = out["Time"].dt.strftime("%Y-%m-%dT%H:%M:%S")
-        return out.where(out.notna(), None).to_dict(orient="records")
+        # to_json writes NaN as null, so the XCom payload is valid JSON
+        return json.loads(out.to_json(orient="records"))
 
     @task
     def export_to_excel(records: list[dict], **context) -> str:
