@@ -54,11 +54,6 @@ singleBinary:
     limits:
       cpu: "1"
       memory: 2Gi
-  extraSecretMounts:
-  - name: grafana-loki-bucket-secret
-    mountPath: /mnt/secrets-store
-    secretName: grafana-loki-bucket-secret
-    readOnly: true
   extraEnv:
     - name: GOMEMLIMIT
       value: 1800MiB
