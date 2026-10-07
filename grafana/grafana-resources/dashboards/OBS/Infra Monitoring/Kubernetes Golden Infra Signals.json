@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 22,
+  "id": 25,
   "links": [],
   "panels": [
     {
@@ -476,7 +476,7 @@
               "mode": "off"
             }
           },
-          "decimals": 2,
+          "decimals": 0,
           "mappings": [
             {
               "options": {
@@ -599,7 +599,7 @@
               "mode": "off"
             }
           },
-          "decimals": 2,
+          "decimals": 0,
           "mappings": [],
           "max": 120,
           "min": 0,
@@ -713,7 +713,7 @@
               "mode": "off"
             }
           },
-          "decimals": 2,
+          "decimals": 0,
           "mappings": [],
           "max": 120,
           "min": 0,
@@ -784,6 +784,277 @@
       "type": "timeseries"
     },
     {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-GrYlRd"
+          },
+          "mappings": [],
+          "max": 1,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 12,
+        "x": 0,
+        "y": 11
+      },
+      "id": 22,
+      "interval": "1m",
+      "options": {
+        "displayMode": "lcd",
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "maxVizHeight": 300,
+        "minVizHeight": 10,
+        "minVizWidth": 0,
+        "namePlacement": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": true,
+        "sizing": "auto",
+        "valueMode": "color"
+      },
+      "pluginVersion": "12.0.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "avg(sum by (instance, cpu) (rate(node_cpu_seconds_total{mode!~\"idle|iowait|steal\",  job=~\"$job\"}[2m])))",
+          "format": "table",
+          "instant": true,
+          "interval": "",
+          "legendFormat": "Real Linux",
+          "range": false,
+          "refId": "Real Linux"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "sum(kube_pod_container_resource_requests{resource=\"cpu\"}) / sum(machine_cpu_cores{})",
+          "hide": false,
+          "instant": true,
+          "legendFormat": "Requests",
+          "range": false,
+          "refId": "Requests"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "sum(kube_pod_container_resource_limits{resource=\"cpu\"}) / sum(machine_cpu_cores{})",
+          "format": "table",
+          "hide": false,
+          "instant": true,
+          "legendFormat": "Limits",
+          "range": false,
+          "refId": "Limits"
+        }
+      ],
+      "title": "Global CPU  Usage",
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {},
+            "indexByName": {
+              "Requests": 2,
+              "Time": 0,
+              "Value #Limits": 3,
+              "Value #Real Linux": 1
+            },
+            "renameByName": {
+              "Requests": "Requests",
+              "Value #Limits": "Limits",
+              "Value #Real Linux": "Current Used%"
+            }
+          }
+        }
+      ],
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "continuous-GrYlRd"
+          },
+          "decimals": 2,
+          "mappings": [],
+          "max": 1,
+          "min": 0,
+          "thresholds": {
+            "mode": "percentage",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 12,
+        "x": 12,
+        "y": 11
+      },
+      "id": 23,
+      "options": {
+        "displayMode": "lcd",
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "maxVizHeight": 300,
+        "minVizHeight": 10,
+        "minVizWidth": 0,
+        "namePlacement": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": true,
+        "sizing": "auto",
+        "text": {},
+        "valueMode": "color"
+      },
+      "pluginVersion": "12.0.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "sum(node_memory_MemTotal_bytes{ job=~\"$job\"} - node_memory_MemAvailable_bytes{ job=~\"$job\"}) / sum(node_memory_MemTotal_bytes{job=~\"$job\"})",
+          "format": "table",
+          "hide": false,
+          "instant": true,
+          "interval": "",
+          "legendFormat": "Real Linux",
+          "range": false,
+          "refId": "Real Linux"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "sum(kube_pod_container_resource_requests{resource=\"memory\"}) / sum(machine_memory_bytes{})",
+          "format": "table",
+          "hide": false,
+          "instant": true,
+          "legendFormat": "Requests",
+          "range": false,
+          "refId": "Requests"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "sum(kube_pod_container_resource_limits{resource=\"memory\"}) / sum(machine_memory_bytes{})",
+          "format": "table",
+          "hide": false,
+          "instant": true,
+          "legendFormat": "Limits",
+          "range": false,
+          "refId": "Limits"
+        }
+      ],
+      "title": "Global RAM Usage",
+      "transformations": [
+        {
+          "id": "merge",
+          "options": {}
+        },
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true
+            },
+            "includeByName": {},
+            "indexByName": {},
+            "renameByName": {
+              "Time": "",
+              "Value #Limits": "Limits",
+              "Value #Real Linux": "Actual Used%",
+              "Value #Requests": "Requests"
+            }
+          }
+        }
+      ],
+      "type": "bargauge"
+    },
+    {
       "fieldConfig": {
         "defaults": {},
         "overrides": []
@@ -792,7 +1063,7 @@
         "h": 2,
         "w": 24,
         "x": 0,
-        "y": 11
+        "y": 15
       },
       "id": 15,
       "options": {
@@ -887,10 +1158,10 @@
         ]
       },
       "gridPos": {
-        "h": 7,
-        "w": 11,
+        "h": 4,
+        "w": 9,
         "x": 0,
-        "y": 13
+        "y": 17
       },
       "id": 16,
       "options": {
@@ -1048,7 +1319,7 @@
             "properties": [
               {
                 "id": "custom.width",
-                "value": 242
+                "value": 213
               }
             ]
           },
@@ -1068,9 +1339,9 @@
       },
       "gridPos": {
         "h": 7,
-        "w": 13,
-        "x": 11,
-        "y": 13
+        "w": 15,
+        "x": 9,
+        "y": 17
       },
       "id": 17,
       "options": {
@@ -1186,7 +1457,7 @@
         "h": 2,
         "w": 24,
         "x": 0,
-        "y": 20
+        "y": 24
       },
       "id": 20,
       "options": {
@@ -1281,10 +1552,10 @@
         ]
       },
       "gridPos": {
-        "h": 7,
+        "h": 4,
         "w": 11,
         "x": 0,
-        "y": 22
+        "y": 26
       },
       "id": 18,
       "options": {
@@ -1452,7 +1723,7 @@
             "properties": [
               {
                 "id": "custom.width",
-                "value": 360
+                "value": 216
               }
             ]
           },
@@ -1474,7 +1745,7 @@
         "h": 7,
         "w": 13,
         "x": 11,
-        "y": 22
+        "y": 26
       },
       "id": 19,
       "options": {
@@ -1544,6 +1815,7 @@
           "options": {
             "excludeByName": {
               "Time": true,
+              "Value #B": true,
               "Value #C": true
             },
             "includeByName": {},
@@ -1577,8 +1849,8 @@
       {
         "allowCustomValue": false,
         "current": {
-          "text": "prometheus",
-          "value": "fg07fp68tcnpcb"
+          "text": "prometheus-main",
+          "value": "asdfasdf20gzkb"
         },
         "name": "datasource",
         "options": [],
@@ -1611,12 +1883,12 @@
     ]
   },
   "time": {
-    "from": "now-6h",
+    "from": "now-30m",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "browser",
   "title": "Kubernetes Golden Infra Signals",
   "uid": "1f1221ad-97fe-4552-a53a-458e1eb35ddc",
-  "version": 25
+  "version": 5
 }
