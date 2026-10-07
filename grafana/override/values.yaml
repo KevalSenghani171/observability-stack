@@ -11,6 +11,9 @@
 # serviceAccount:
 #   create: false
 #   name: vault-serviceaccount
+deploymentStrategy:
+  type: Recreate
+
 
 envValueFrom:
   GF_DATABASE_USER:
