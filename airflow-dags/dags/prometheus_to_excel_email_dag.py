@@ -1,5 +1,5 @@
 """
-Airflow DAG: Prometheus query -> table -> Excel -> Email
+Airflow DAG: Prometheus query -> table -> Excel -> email (attachment only, no body)
 
 Trigger with config / params (all optional, defaults provided):
   prometheus_url : Prometheus base URL
@@ -9,17 +9,14 @@ Trigger with config / params (all optional, defaults provided):
   step           : query_range step, e.g. 1h, 5m
   ip_label       : metric label that holds the server IP
   timezone       : timezone used for the "Time" column
-  output_dir     : where the .xlsx is written (must be shared storage if you
-                   run Celery/Kubernetes executors with multiple workers)
+  output_dir     : where the .xlsx is written
   email_to       : comma separated recipients
   email_subject  : subject line
   email_conn_id  : Airflow SMTP connection id (default smtp_default)
-  max_rows_in_body : rows shown in the email body table (full data is in Excel)
 
-Output columns:  Time | server_ip | CPU% | Memory %
+Excel columns (always in this order):  Time | server_ip | CPU% | Memory %
 
-Requires: requests, pandas, openpyxl. Airflow 2.4+ (TaskFlow API).
-SMTP: configure [smtp] in airflow.cfg or create the connection `smtp_default`.
+Requires: requests, pandas, openpyxl. Airflow 2.4+ / 3.x (TaskFlow API).
 """
 from __future__ import annotations
 
@@ -31,6 +28,7 @@ from datetime import timedelta
 import pandas as pd
 import pendulum
 import requests
+
 try:  # Airflow 3
     from airflow.sdk import Param, dag, task
 except ImportError:  # Airflow 2.x
@@ -38,7 +36,11 @@ except ImportError:  # Airflow 2.x
     from airflow.models.param import Param
 from airflow.providers.smtp.hooks.smtp import SmtpHook
 
-log = logging.getLogger(__name__)
+log =logging.getLogger(__name__)
+
+# Final column order of the table / Excel sheet. Everything below uses these
+# NAMES (never column positions), so the layout can't get mixed up.
+COLUMNS = ["Time", "server_ip", "CPU%", "Memory %"]
 
 # Default PromQL (node_exporter). Replace from the Trigger UI as needed.
 DEFAULT_CPU_QUERY = (
@@ -76,25 +78,51 @@ def _query_range(base_url, query, start, end, step, label, value_col, verify, ti
     return df
 
 
-def _display_df(df: pd.DataFrame) -> pd.DataFrame:
-    """Format like the requested sample: 06/10/2026 0:00:00 | ip | 56% | 35%"""
-    out = df.copy()
-    out["Time"] = out["Time"].apply(lambda t: f"{t:%d/%m/%Y} {t.hour}:{t:%M:%S}")
-    for c in ("CPU%", "Memory %"):
-        out[c] = out[c].map(lambda v: "" if pd.isna(v) else f"{v:.0%}")
-    return out
+def _write_excel(df: pd.DataFrame, path: str) -> None:
+    """Write the report. Column order and cell formats are set by column NAME."""
+    df = df[COLUMNS].copy()  # force order: Time | server_ip | CPU% | Memory %
+    df["Time"] = pd.to_datetime(df["Time"])
+
+    formats = {
+        "Time": "dd/mm/yyyy h:mm:ss",
+        "CPU%": "0%",
+        "Memory %": "0%",
+    }
+    widths = {"Time": 22, "server_ip": 18, "CPU%": 10, "Memory %": 12}
+
+    with pd.ExcelWriter(path, engine="openpyxl") as writer:
+        df.to_excel(writer, sheet_name="Report", index=False)
+        ws = writer.sheets["Report"]
+
+        from openpyxl.styles import Alignment, Font, PatternFill
+        from openpyxl.utils import get_column_letter
+
+        for cell in ws[1]:
+            cell.font = Font(bold=True, color="FFFFFF")
+            cell.fill = PatternFill("solid", fgColor="1F4E78")
+            cell.alignment = Alignment(horizontal="center")
+
+        for idx, name in enumerate(COLUMNS, start=1):
+            letter = get_column_letter(idx)
+            ws.column_dimensions[letter].width = widths[name]
+            if name in formats:
+                for row in range(2, ws.max_row + 1):
+                    ws.cell(row, idx).number_format = formats[name]
+
+        ws.freeze_panes = "A2"
+        ws.auto_filter.ref = ws.dimensions
 
 
 @dag(
-    dag_id="prometheus_to_excel_email_report",
-    description="Prometheus -> Time/server_ip/CPU%/Memory% table -> Excel -> email",
+    dag_id="prometheus_to_excel_report",
+    description="Prometheus -> Time/server_ip/CPU%/Memory% table -> Excel",
     schedule=None,  # e.g. "0 8 * * *" for a daily 08:00 report
     start_date=pendulum.datetime(2026, 1, 1, tz="Asia/Kolkata"),
     catchup=False,
-    tags=["prometheus", "report", "excel", "email"],
+    tags=["prometheus", "report", "excel"],
     default_args={"retries": 1, "retry_delay": timedelta(minutes=2)},
     params={
-        "prometheus_url": Param("https://prometheus-keval.duckdns.org/", type="string"),
+        "prometheus_url": Param("https://prometheus-keval.duckdns.org", type="string"),
         "cpu_query": Param(DEFAULT_CPU_QUERY, type="string"),
         "memory_query": Param(DEFAULT_MEM_QUERY, type="string"),
         "start": Param("", type="string", description="ISO datetime; blank = data interval start"),
@@ -107,11 +135,10 @@ def _display_df(df: pd.DataFrame) -> pd.DataFrame:
         "email_to": Param("senghanikeval@gmail.com", type="string", description="Comma separated"),
         "email_subject": Param("Prometheus CPU & Memory report", type="string"),
         "email_conn_id": Param("smtp_default", type="string"),
-        "max_rows_in_body": Param(50, type="integer"),
     },
     render_template_as_native_obj=True,
 )
-def prometheus_to_excel_email_report():
+def prometheus_to_excel_report():
 
     @task
     def fetch_metrics(**context) -> list[dict]:
@@ -151,10 +178,16 @@ def prometheus_to_excel_email_report():
             .dt.tz_localize(None)
         )
         df = df.sort_values(["Time", "server_ip"]).reset_index(drop=True)
-        df = df[["Time", "server_ip", "CPU%", "Memory %"]]
+        df = df[COLUMNS]
 
-        log.info("Result table:\n%s", _display_df(df).to_string(index=False))
+        # Show the table in the task log
+        printable = df.copy()
+        printable["Time"] = printable["Time"].apply(lambda t: f"{t:%d/%m/%Y} {t.hour}:{t:%M:%S}")
+        for c in ("CPU%", "Memory %"):
+            printable[c] = printable[c].map(lambda v: "" if pd.isna(v) else f"{v:.0%}")
+        log.info("Result table:\n%s", printable.to_string(index=False))
 
+        # XCom-safe (JSON) payload
         out = df.copy()
         out["Time"] = out["Time"].dt.strftime("%Y-%m-%dT%H:%M:%S")
         return out.where(out.notna(), None).to_dict(orient="records")
@@ -162,71 +195,18 @@ def prometheus_to_excel_email_report():
     @task
     def export_to_excel(records: list[dict], **context) -> str:
         p = context["params"]
+        # XCom does not keep key order, so the order is set again in _write_excel
         df = pd.DataFrame(records)
-        df["Time"] = pd.to_datetime(df["Time"])
 
         os.makedirs(p["output_dir"], exist_ok=True)
         stamp = pendulum.now(p["timezone"]).format("YYYYMMDD_HHmmss")
         path = os.path.join(p["output_dir"], f"prometheus_report_{stamp}.xlsx")
 
-        with pd.ExcelWriter(path, engine="openpyxl") as writer:
-            df.to_excel(writer, sheet_name="Report", index=False)
-            ws = writer.sheets["Report"]
-
-            from openpyxl.styles import Alignment, Font, PatternFill
-
-            for cell in ws[1]:
-                cell.font = Font(bold=True, color="FFFFFF")
-                cell.fill = PatternFill("solid", fgColor="1F4E78")
-                cell.alignment = Alignment(horizontal="center")
-            for row in range(2, ws.max_row + 1):
-                ws.cell(row, 1).number_format = "dd/mm/yyyy h:mm:ss"
-                ws.cell(row, 3).number_format = "0%"
-                ws.cell(row, 4).number_format = "0%"
-            for col, width in zip("ABCD", (22, 18, 10, 12)):
-                ws.column_dimensions[col].width = width
-            ws.freeze_panes = "A2"
-            ws.auto_filter.ref = ws.dimensions
-
+        _write_excel(df, path)
         log.info("Excel report written to %s (%d rows)", path, len(df))
         return path
 
-    @task
-    def send_email_report(records: list[dict], excel_path: str, **context) -> None:
-        p = context["params"]
-        df = pd.DataFrame(records)
-        df["Time"] = pd.to_datetime(df["Time"])
-
-        shown = _display_df(df).head(int(p["max_rows_in_body"]))
-        table_html = shown.to_html(index=False, border=1, justify="center")
-        note = ""
-        if len(df) > len(shown):
-            note = f"<p><i>Showing first {len(shown)} of {len(df)} rows. See the attached Excel for the full data.</i></p>"
-
-        html = f"""
-        <p>Hi,</p>
-        <p>Please find the Prometheus CPU / Memory report below and attached as Excel.</p>
-        {table_html}
-        {note}
-        <p>Regards,<br>Airflow</p>
-        """
-
-        recipients = [e.strip() for e in p["email_to"].split(",") if e.strip()]
-        # SmtpHook reads host/port/login/TLS from the Airflow connection itself
-        # (airflow.utils.email.send_email takes the host from airflow.cfg instead,
-        # which falls back to localhost:25 -> "Connection refused").
-        with SmtpHook(smtp_conn_id=p["email_conn_id"]) as smtp:
-            smtp.send_email_smtp(
-                to=recipients,
-                subject=p["email_subject"],
-                html_content=html,
-                files=[excel_path],
-            )
-        log.info("Email sent to %s with attachment %s", recipients, excel_path)
-
-    data = fetch_metrics()
-    xlsx = export_to_excel(data)
-    send_email_report(data, xlsx)
+    export_to_excel(fetch_metrics())
 
 
-prometheus_to_excel_email_report()
+prometheus_to_excel_report()
