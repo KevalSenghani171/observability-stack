@@ -1,10 +1,13 @@
 {{- if .Values.tempoQuery.ingress.enabled -}}
+{{- $ingressApiIsStable := eq (include "tempo.ingress.isStable" .) "true" -}}
+{{- $ingressSupportsIngressClassName := eq (include "tempo.ingress.supportsIngressClassName" .) "true" -}}
+{{- $ingressSupportsPathType := eq (include "tempo.ingress.supportsPathType" .) "true" -}}
 {{- $fullName := include "tempo.fullname" . -}}
 {{- $servicePort := .Values.tempoQuery.service.port -}}
 {{- $ingressPath := .Values.tempoQuery.ingress.path -}}
 {{- $ingressPathType := .Values.tempoQuery.ingress.pathType -}}
 {{- $extraPaths := .Values.tempoQuery.ingress.extraPaths -}}
-apiVersion: networking.k8s.io/v1
+apiVersion: {{ include "tempo.ingress.apiVersion" . }}
 kind: Ingress
 metadata:
   name: {{ $fullName }}
@@ -21,8 +24,8 @@ metadata:
     {{- end }}
   {{- end }}
 spec:
-  {{- with .Values.tempoQuery.ingress.ingressClassName }}
-  ingressClassName: {{ . }}
+  {{- if and $ingressSupportsIngressClassName .Values.tempoQuery.ingress.ingressClassName }}
+  ingressClassName: {{ .Values.tempoQuery.ingress.ingressClassName }}
   {{- end -}}
   {{- with .Values.tempoQuery.ingress.tls }}
   tls:
@@ -38,24 +41,38 @@ spec:
           {{- toYaml . | nindent 10 }}
           {{- end }}
           - path: {{ $ingressPath }}
+            {{- if $ingressSupportsPathType }}
             pathType: {{ $ingressPathType }}
+            {{- end }}
             backend:
+              {{- if $ingressApiIsStable }}
               service:
                 name: {{ $fullName }}
                 port:
                   number: {{ $servicePort }}
+              {{- else }}
+              serviceName: {{ $fullName }}
+              servicePort: {{ $servicePort }}
+              {{- end }}
   {{- end }}
   {{- else }}
     - http:
         paths:
           - backend:
+              {{- if $ingressApiIsStable }}
               service:
                 name: {{ $fullName }}
                 port:
                   number: {{ $servicePort }}
+              {{- else }}
+              serviceName: {{ $fullName }}
+              servicePort: {{ $servicePort }}
+              {{- end }}
             {{- with $ingressPath }}
             path: {{ . }}
             {{- end }}
+            {{- if $ingressSupportsPathType }}
             pathType: {{ $ingressPathType }}
+            {{- end }}
   {{- end -}}
 {{- end }}

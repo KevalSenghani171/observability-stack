@@ -1,0 +1,10 @@
+/home/ubuntu/observability-stack/otel-shopping-java/src/main/java/com/example/shopping/CartLine.java
+/home/ubuntu/observability-stack/otel-shopping-java/src/main/java/com/example/shopping/CartRepository.java
+/home/ubuntu/observability-stack/otel-shopping-java/src/main/java/com/example/shopping/DataLoader.java
+/home/ubuntu/observability-stack/otel-shopping-java/src/main/java/com/example/shopping/OrderRecord.java
+/home/ubuntu/observability-stack/otel-shopping-java/src/main/java/com/example/shopping/OrderRepository.java
+/home/ubuntu/observability-stack/otel-shopping-java/src/main/java/com/example/shopping/Product.java
+/home/ubuntu/observability-stack/otel-shopping-java/src/main/java/com/example/shopping/ProductRepository.java
+/home/ubuntu/observability-stack/otel-shopping-java/src/main/java/com/example/shopping/ShoppingApplication.java
+/home/ubuntu/observability-stack/otel-shopping-java/src/main/java/com/example/shopping/ShoppingController.java
+/home/ubuntu/observability-stack/otel-shopping-java/src/main/java/com/example/shopping/ShoppingService.java
