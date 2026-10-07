@@ -194,9 +194,10 @@ def prometheus_to_excel_email_report():
         from openpyxl.styles import Alignment, Font, PatternFill
 
         p = context["params"]
-        df = pd.DataFrame(records)
-        df["Time"] = pd.to_datetime(df["Time"])
         value_cols = [c[0] for c in COLUMNS]
+        # XCom does not preserve key order, so enforce the column order here
+        df = pd.DataFrame(records)[["Time", "Instance"] + value_cols]
+        df["Time"] = pd.to_datetime(df["Time"])
         df[value_cols] = df[value_cols] / 100.0  # store as ratio, display as %
 
         os.makedirs(p["output_dir"], exist_ok=True)
