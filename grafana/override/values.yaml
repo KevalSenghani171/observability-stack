@@ -188,6 +188,50 @@ datasources:
             hide: false
           lokiSearch:
             datasourceUid: bserfvdf4kpvkf
+    - name: prometheus-main
+      type: prometheus
+      url: https://prometheus-keval.duckdns.org
+      uid: asdfasdf20gzkb
+      httpMode: 'POST'
+      editable: false
+      default: true
+      orgId: 2
+    - name: loki-main
+      type: loki
+      url: http://loki.devops-tools.svc.cluster.local:3100
+      uid: bserfvdf4kpvkf
+      httpMode: 'POST'
+      editable: false
+      orgId: 2
+    - name: pyroscope-main
+      type: grafana-pyroscope-datasource
+      url: http://pyroscope.devops-tools.svc.cluster.local:4040
+      uid: gbsradlqxmv4d
+      httpMode: 'POST'
+      editable: false
+      orgId: 2
+    - name: jaeger-main
+      type: jaeger
+      url: http://jaeger.observability.svc.cluster.local:16686
+      uid: daasdfaw5nuoc
+      httpMode: 'POST'
+      editable: false
+      orgId: 2
+    - name: tempo-main
+      type: tempo
+      url: http://tempo.devops-tools.svc.cluster.local:3200
+      uid: vadfawefasdw5nuoc
+      editable: false
+      jsonData:
+          httpMethod: GET
+          serviceMap:
+            datasourceUid: prometheus
+          nodeGraph:
+            enabled: true
+          search:
+            hide: false
+          lokiSearch:
+            datasourceUid: bserfvdf4kpvkf
 
 dashboardProviders:
   dashboardproviders.yaml:
