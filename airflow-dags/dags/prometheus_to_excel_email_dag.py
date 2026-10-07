@@ -231,7 +231,7 @@ def prometheus_to_excel_email_report():
             smtp.send_email_smtp(
                 to=recipients,
                 subject=p["email_subject"],
-                html_content="",  # no body, attachment only
+                html_content=" ",  # hook requires a non-empty body; a space shows as blank
                 files=[excel_path],
             )
         log.info("Email sent to %s with attachment %s", recipients, excel_path)
