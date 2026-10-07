@@ -7,8 +7,3 @@ alloy:
       valueFrom:
         fieldRef:
           fieldPath: spec.nodeName
-
-  configMap:
-    create: false
-    name: alloy-config
-  configPath: /etc/alloy 
