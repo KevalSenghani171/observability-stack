@@ -1,4 +1,4 @@
-deploymentMode: SingleBinary   # verify against your chart version
+deploymentMode: Monolithic   # name used by your chart version (see the validate.yaml error)
 
 loki:
   image:
@@ -19,7 +19,7 @@ loki:
       admin: loki-admin-observability-aws
     s3:
       region: ap-south-1
-      # no keys here; they come from the env vars below
+      # no keys here; they come from the env vars under singleBinary.extraEnv
 
   schemaConfig:
     configs:
@@ -70,12 +70,40 @@ singleBinary:
   persistence:
     enabled: true
     size: 10Gi
-    storageClass: ebs-sc      # see note below
+    storageClass: ebs-sc      # must exist on your cluster: kubectl get sc
     accessModes:
       - ReadWriteOnce
     enableStatefulSetAutoDeletePVC: true
     whenScaled: Delete
     whenDeleted: Delete
+
+# Required: chart defaults these to 3 replicas, which conflicts with single-binary mode
+backend:
+  replicas: 0
+read:
+  replicas: 0
+write:
+  replicas: 0
+ingester:
+  replicas: 0
+querier:
+  replicas: 0
+queryFrontend:
+  replicas: 0
+queryScheduler:
+  replicas: 0
+distributor:
+  replicas: 0
+compactor:
+  replicas: 0
+indexGateway:
+  replicas: 0
+bloomGateway:
+  replicas: 0
+bloomPlanner:
+  replicas: 0
+bloomBuilder:
+  replicas: 0
 
 minio:
   enabled: false
