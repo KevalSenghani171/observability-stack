@@ -1,8 +1,8 @@
 """
-Airflow DAG: Prometheus (hourly MAX / MIN / AVG of CPU & Memory) -> Excel -> Email (attachment only)
+Airflow DAG: Prometheus (hourly MAX / AVG / MIN of CPU & Memory) -> Excel -> Email (attachment only)
 
 Output columns:
-  Time | server_ip | Max CPU% | Max Memory % | Min CPU% | Min Memory % | Avg CPU% | Avg Memory %
+  Time | Instance | Max CPU % | Max Memory % | Avg CPU% | Avg Memory % | Min CPU % | Min Memory %
 
 Params (all optional):
   prometheus_url, job_regex, start, end, step, window, subquery_step,
@@ -13,8 +13,8 @@ Requires: requests, pandas, openpyxl. Airflow 2.4+ / 3.x.
 """
 from __future__ import annotations
 
-import logging
 import json
+import logging
 import os
 import re
 from datetime import timedelta
@@ -45,12 +45,12 @@ MEM_BASE = (
 
 # (output column, base expression, aggregation function) -- order = Excel column order
 COLUMNS = [
-    ("Max CPU%",     CPU_BASE, "max"),
+    ("Max CPU %",    CPU_BASE, "max"),
     ("Max Memory %", MEM_BASE, "max"),
-    ("Min CPU%",     CPU_BASE, "min"),
-    ("Min Memory %", MEM_BASE, "min"),
     ("Avg CPU%",     CPU_BASE, "avg"),
     ("Avg Memory %", MEM_BASE, "avg"),
+    ("Min CPU %",    CPU_BASE, "min"),
+    ("Min Memory %", MEM_BASE, "min"),
 ]
 
 
@@ -90,14 +90,14 @@ def _query_range(base_url, query, start_ts, end_ts, step, label, value_col, veri
 
 @dag(
     dag_id="prometheus_to_excel_email_report",
-    description="Prometheus hourly max/min/avg CPU & Memory -> Excel -> email attachment",
+    description="Prometheus hourly max/avg/min CPU & Memory -> Excel -> email attachment",
     schedule=None,  # e.g. "0 8 * * *" for a daily 08:00 report
     start_date=pendulum.datetime(2026, 1, 1, tz="Asia/Kolkata"),
     catchup=False,
     tags=["prometheus", "report", "excel", "email"],
     default_args={"retries": 1, "retry_delay": timedelta(minutes=2)},
     params={
-        "prometheus_url": Param("https://prometheus-keval.duckdns.org/", type="string"),
+        "prometheus_url": Param("https://prometheus-keval.duckdns.org", type="string"),
         "job_regex": Param(".+", type="string", description="Replaces $job, e.g. node|linux"),
         "start": Param("", type="string", description="ISO datetime; blank = data interval start"),
         "end": Param("", type="string", description="ISO datetime; blank = data interval end"),
@@ -178,7 +178,9 @@ def prometheus_to_excel_email_report():
             .dt.tz_localize(None)
         )
         df = df.sort_values(["Time", "server_ip"]).reset_index(drop=True)
-        df = df[["Time", "server_ip"] + [c[0] for c in COLUMNS]]
+        df = df[["Time", "server_ip"] + [c[0] for c in COLUMNS]].rename(
+            columns={"server_ip": "Instance"}
+        )
 
         log.info("Result:\n%s", df.round(1).to_string(index=False))
 
