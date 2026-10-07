@@ -22,7 +22,7 @@ echo -e "\n"
 cd alloy 
 ls -l
 
-helm upgrade --install alloy grafana/alloy -f values.yaml -f override/values.yaml -n devops-tools    
+helm upgrade --install alloy . -f values.yaml -f override/values.yaml -n devops-tools    
 
 kubectl get all -n  devops-tools 
 
